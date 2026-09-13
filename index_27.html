@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>List by Aisle – a quick shopping list sorted by aisle, so the shop is easier</title>
+<meta name="description" content="A quick shopping list sorted by aisle, so you get round the shop in one pass. Type, tap or paste your list, then copy it, WhatsApp it or email it. Free, no account.">
+<meta name="theme-color" content="#2f5d3a">
+<link rel="canonical" href="https://listbyaisle.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="List by Aisle">
+<meta property="og:title" content="List by Aisle – a quick shopping list sorted by aisle">
+<meta property="og:description" content="Your list sorted by aisle in seconds, so the shop takes one pass instead of doubling back. Free, no account.">
+<meta property="og:url" content="https://listbyaisle.com/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"List by Aisle","url":"https://listbyaisle.com/","applicationCategory":"LifestyleApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"A quick shopping list sorted by aisle, so you get round the shop in one pass. Type, tap or paste your list, then copy it, send it to WhatsApp or email it. Free, no account needed."}</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f5d3a'/%3E%3Cpath d='M16 20h32M16 32h32M16 44h20' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+:root{
+  --bg:#f4f1ea; --card:#fffdf8; --line:#ddd7c9; --ink:#1f2a22; --muted:#66705f; --faint:#9aa192;
+  --green:#2f5d3a; --green-deep:#22452b; --green-wash:#e3ecdf; --accent:#c8552b; --accent-wash:#f7e3da; --purple:#6b4fa3; --purple-deep:#4a3477; --purple-wash:#e9e0f7;
+}
+@media (prefers-color-scheme:dark){
+  :root{ --bg:#15191a; --card:#1e2426; --line:#333b3d; --ink:#e9e6dd; --muted:#a3ab9f; --faint:#727a70;
+    --green:#8fc59a; --green-deep:#b6dbbd; --green-wash:#243128; --accent:#f09a7a; --accent-wash:#3a2721; --purple:#b39ddb; --purple-deep:#d3c4ec; --purple-wash:#33294a; }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 90px}
+header{padding:26px 0 8px;display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.55rem;letter-spacing:-.01em;color:var(--green);margin:0;text-decoration:none}
+.brand span{color:var(--ink)}
+.sticky{position:sticky;top:0;z-index:10;background:var(--bg);padding:8px 0 10px;border-bottom:1px solid var(--line)}
+.row{display:flex;gap:8px;align-items:center}
+#q{flex:1;min-width:0;padding:13px 15px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);font:inherit;font-size:17px}
+#q:focus{outline:2px solid var(--green);outline-offset:-1px;border-color:transparent}
+#q::placeholder{color:var(--faint)}
+.btn{font:inherit;font-size:.92rem;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--ink);padding:11px 14px;border-radius:10px;white-space:nowrap;font-weight:700}
+.btn:hover{border-color:var(--green)}
+.btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+.btn.primary:hover{background:var(--green-deep);border-color:var(--green-deep)}
+.btn:disabled{opacity:.4;cursor:default}
+.btn[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.tabs{display:flex;gap:6px;margin-top:10px;padding:4px;background:var(--card);border:1.5px solid var(--line);border-radius:12px}
+.tabb{flex:1 1 0;font:inherit;font-size:.95rem;font-weight:700;cursor:pointer;border:1.5px solid transparent;background:transparent;color:var(--muted);padding:9px 10px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:6px}
+.tabb:hover{color:var(--ink)}
+.tabb[aria-selected="true"]{background:var(--green-wash);color:var(--green-deep);border-color:var(--green)}
+.tabb.mine[aria-selected="true"]{background:var(--purple-wash);color:var(--purple-deep);border-color:var(--purple)}
+.tabb .tn{font-size:.78rem;font-weight:700;padding:1px 7px;border-radius:99px;background:var(--purple);color:#fff}
+.tabb .tn:empty{display:none}
+.tag{font-size:.9rem;color:var(--muted);margin:0}
+.hero{margin:4px 0 14px}
+.hero h1{font-weight:700;font-size:1.4rem;line-height:1.2;color:var(--ink);margin:0 0 6px}
+.hero p{font-size:.95rem;line-height:1.45;color:var(--muted);margin:0;max-width:34em}
+@media (max-width:480px){.hero h1{font-size:1.3rem}}
+.howwrap{margin:16px 0 4px;padding:14px 16px;background:var(--card);border:1.5px solid var(--line);border-radius:10px;display:grid;gap:12px}
+@media (min-width:600px){.howwrap{grid-template-columns:1fr auto;align-items:center;gap:20px}}
+.how{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+.hasl{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;padding:12px 18px;border:1.5px dashed var(--line);border-radius:10px;font-size:.95rem;color:var(--ink)}
+@media (min-width:600px){.hasl{min-width:180px}}
+.how li{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;font-size:.95rem;line-height:1.75}
+.how .how .k{width:28px;height:28px;border-radius:50%;background:var(--green-wash);color:var(--green-deep);font-weight:700;font-size:.85rem;display:flex;align-items:center;justify-content:center}
+.how b{color:var(--ink)}
+.link{font:inherit;font-weight:700;color:var(--green-deep);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.paste{margin:10px 0 4px;padding:14px 16px;background:var(--card);border:1.5px solid var(--green);border-radius:10px}
+.paste[hidden]{display:none}
+.paste p{margin:0 0 8px;font-size:.9rem;color:var(--muted)}
+#pasteText{width:100%;min-height:120px;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:.95rem;resize:vertical}
+#pasteText:focus{outline:2px solid var(--green);outline-offset:-1px;border-color:transparent}
+.paste .row{margin-top:8px;justify-content:flex-end}
+.count{font-size:.82rem;color:var(--muted);margin:8px 0 0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.count b{color:var(--green-deep)}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+.actions .btn{flex:1 1 auto;text-align:center}
+.actions #clear{flex:0 0 auto;margin-left:auto}
+.btn.share{border-color:var(--green);color:var(--green-deep)}
+.btn.share[data-on="1"]{background:var(--green-wash)}
+.shared{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin:6px 0 2px;padding:9px 12px;border-radius:9px;background:var(--green-wash);color:var(--green-deep);font-size:.86rem}
+.shared[hidden]{display:none}
+.shared span{flex:1 1 200px}
+.shared .link{font-size:.86rem}
+#shareUrl{flex:1 1 100%;font:inherit;font-size:.84rem;padding:6px 9px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);min-width:0}
+.shared .link.quiet{color:var(--muted);font-weight:400}
+h2.aisle{margin:0}
+.ah{font:inherit;width:100%;cursor:pointer;background:none;border:0;border-bottom:1px solid var(--line);color:var(--ink);text-align:left;padding:14px 4px 12px;display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:700}
+.ah .n{margin-left:auto;font-size:.8rem;color:var(--green-deep);font-weight:700}
+.ah .c{width:10px;height:10px;border-right:2px solid var(--faint);border-bottom:2px solid var(--faint);transform:rotate(-45deg);transition:transform .15s;flex:0 0 auto}
+.ah[aria-expanded="true"] .c{transform:rotate(45deg)}
+.ah:hover{color:var(--green-deep)}
+.grid{margin:10px 0 18px}
+.grid[hidden]{display:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:7px}
+.it{font:inherit;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--ink);text-align:left;padding:11px 12px;border-radius:9px;line-height:1.3;display:flex;gap:10px;align-items:flex-start;font-size:.95rem}
+.it:hover{border-color:var(--green)}
+.it .box{flex:0 0 auto;width:18px;height:18px;border:2px solid var(--faint);border-radius:5px;margin-top:1px;position:relative}
+.it[aria-pressed="true"]{background:var(--green-wash);border-color:var(--green)}
+.it[aria-pressed="true"] .box{background:var(--green);border-color:var(--green)}
+.it[aria-pressed="true"] .box::after{content:"";position:absolute;left:5px;top:1px;width:4px;height:9px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(43deg)}
+.it[aria-pressed="true"] .nm{font-weight:700}
+.it.got .nm{text-decoration:line-through;opacity:.5}
+.it.own{border-style:dashed}
+.it.rm{opacity:.6;border-style:dashed}
+.it.rm .nm{text-decoration:line-through}
+.it.rm:hover{opacity:1}
+h2.aisle.rm .ah{color:var(--muted)}
+.rmfoot{grid-column:1/-1;padding:2px 4px}
+.link.quiet{color:var(--muted);font-weight:400;font-size:.85rem}
+.it small{display:block;font-size:.74rem;color:var(--faint)}
+.it .leaf{display:inline-block;font-size:.7rem;color:#fff;background:var(--green);border-radius:99px;padding:1px 7px;margin-left:6px;vertical-align:middle;font-weight:700;cursor:pointer}
+.it .leaf.off{background:transparent;color:var(--faint);border:1px dashed var(--line);font-weight:400}
+.it .leaf.off:hover{color:var(--green-deep);border-color:var(--green)}
+.empty{color:var(--muted);text-align:center;padding:40px 10px}
+.empty b{display:block;font-size:1.05rem;color:var(--ink);margin-bottom:4px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--green-deep);color:#fff;padding:11px 20px;border-radius:9px;font-size:.92rem;z-index:60;box-shadow:0 8px 24px rgba(0,0,0,.25);max-width:90vw;text-align:center}
+@media (prefers-color-scheme:dark){.toast{color:#15191a}}
+.fb{margin-top:44px;padding:18px 18px 16px;border:1.5px solid var(--line);border-radius:12px;background:var(--card)}
+.fb h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.25rem;margin:0 0 4px;color:var(--ink)}
+.fb p{margin:0 0 12px;color:var(--muted);font-size:.9rem}
+#fbtext{width:100%;min-height:88px;padding:11px 13px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);font:inherit;font-size:.95rem;resize:vertical}
+#fbtext:focus{outline:2px solid var(--green);outline-offset:-1px;border-color:transparent}
+.fb .row{margin-top:10px;justify-content:space-between;flex-wrap:wrap}
+.fb small{color:var(--faint);font-size:.78rem}
+.about{margin-top:36px;padding-top:18px;border-top:1px solid var(--line);font-size:.85rem;color:var(--muted)}
+.about a{color:var(--green-deep)}
+.pill{display:inline-block;font-size:.72rem;padding:2px 8px;border-radius:99px;background:var(--accent-wash);color:var(--accent);font-weight:700;margin-left:6px;vertical-align:middle}
+@media (max-width:480px){.actions .btn{padding:11px 8px;font-size:.86rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <a class="brand" href="/">List<span>by</span>Aisle</a>
+  <p class="tag">Free · no account</p>
+</header>
+<div class="hero">
+  <h1>A quick list, sorted by aisle.</h1>
+</div>
+
+<div class="sticky">
+  <div class="row">
+    <input id="q" placeholder="Add something – milk, loo roll, bananas…" autocomplete="off" autocapitalize="off" enterkeyhint="done">
+    <button class="btn" id="org" aria-pressed="false" title="Mark what you add as organic">Organic</button>
+  </div>
+  <div class="tabs" role="tablist">
+    <button class="tabb" id="tabAll" role="tab" aria-selected="true">All aisles</button>
+    <button class="tabb mine" id="onlySel" role="tab" aria-selected="false" aria-pressed="false">My list <span class="tn" id="tabN"></span></button>
+  </div>
+  <div class="count" id="count"></div>
+</div>
+
+<div class="actions">
+  <button class="btn primary" id="copy">Copy</button>
+  <button class="btn" id="wa">WhatsApp / Messenger</button>
+  <button class="btn" id="mail">Email</button>
+  <button class="btn share" id="share" title="Share this list so someone else can edit it with you">Share link</button>
+  <button class="btn" id="clear">Clear</button>
+</div>
+<div class="shared" id="shared" hidden>
+  <span>This list is <b>shared</b> – anyone with the link sees and edits the same list, live.</span>
+  <input id="shareUrl" readonly aria-label="Link to this list">
+  <button class="link" id="shareLink" type="button">Copy link</button>
+  <button class="link quiet" id="shareStop" type="button">Stop sharing</button>
+</div>
+<div class="howwrap">
+<ul class="how">
+  <li><span class="k">1</span><span><b>Search</b></span></li>
+  <li><span class="k">2</span><span><b>Select</b></span></li>
+  <li><span class="k">3</span><span><b>Share</b></span></li>
+</ul>
+<div class="hasl"><b>Already have a list?</b><button class="link" id="pasteOpen" type="button">Paste it in</button></div>
+</div>
+
+<div class="paste" id="paste" hidden>
+  <p>Paste it however it comes – a note, a WhatsApp message, a list. It gets sorted by aisle.</p>
+  <textarea id="pasteText" placeholder="milk, bananas, loo roll and organic eggs&#10;chicken thighs&#10;rice&#10;soy sauce"></textarea>
+  <div class="row">
+    <button class="btn" id="pasteCancel" type="button">Cancel</button>
+    <button class="btn primary" id="pasteGo" type="button">Sort by aisle</button>
+  </div>
+</div>
+
+<div id="out"></div>
+
+<section class="fb" id="feedback">
+  <h2>Feedback: what would make this better?</h2>
+  <textarea id="fbtext" placeholder="Write anything – a missing item, a wrong aisle, something you'd like…"></textarea>
+  <div class="row">
+    <small id="fbnote">No account, no tracking.</small>
+    <button class="btn primary" id="fbsend" type="button">Send</button>
+  </div>
+</section>
+
+<div class="about">
+  <h2 style="font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.15rem;color:var(--ink);margin:0 0 6px">Why sort a shopping list by aisle?</h2>
+  <p>Because a list in shop order makes the shop quicker and easier. Write a normal list and it comes out grouped the way a supermarket is laid out: fruit and veg, bakery, dairy and eggs, meat and fish, chilled, vegetarian and vegan, frozen, cupboard, herbs and spices, world foods, snacks, drinks, household, toiletries, baby and pets. Mark anything organic with one switch. One pass round the shop instead of doubling back. Works on any phone or laptop, nothing to install. Press Share link and whoever you send the link to sees and edits the same list, live – handy for couples and housemates.</p>
+  <p><strong>List by Aisle</strong> is free and needs no account. Your list stays in this browser on this device until you clear it – nothing is sent anywhere unless you press Copy, WhatsApp / Messenger or Email.</p>
+</div>
+</div>
+
+<script>
+var CAT = {
+  veg:["Apples","Avocados","Bananas","Beetroot","Blueberries","Broccoli","Cabbage","Carrots","Cauliflower","Celery","Cherry tomatoes","Clementines","Coriander","Courgettes","Cucumber","Garlic","Ginger","Grapes","Green beans","Kale","Kiwis","Leeks","Lemons","Lettuce","Limes","Mango","Melon","Mint","Mushrooms","Onions","Oranges","Parsley","Parsnips","Pears","Peppers","Pineapple","Potatoes","Raspberries","Red onions","Rocket","Salad leaves","Spinach","Spring onions","Strawberries","Sweet potatoes","Sweetcorn","Tomatoes"],
+  bakery:["Bagels","Baguette","Bread (white)","Bread (wholemeal)","Bread (sourdough)","Brioche","Cakes","Croissants","Crumpets","Naan","Pitta bread","Rolls","Tortilla wraps"],
+  dairy:["Butter","Cheddar","Cottage cheese","Cream","Cream cheese","Crème fraîche","Eggs","Feta","Greek yoghurt","Halloumi","Kefir","Milk","Mozzarella","Oat milk","Parmesan","Yoghurt"],
+  meat:["Bacon","Beef mince","Chicken breasts","Chicken thighs","Fish fingers","Ham","Lamb","Pork","Prawns","Salmon","Sausages","Smoked salmon","Tuna (fresh)","White fish"],
+  chilled:["Coleslaw","Dips","Fresh pasta","Hummus","Juice (fresh)","Pizza (fresh)","Ready meals"],
+  veggie:["Falafel","Meat-free mince","Plant burgers","Quorn","Seitan","Tempeh","Tofu","Vegan cheese","Vegan sausages","Veggie burgers","Veggie sausages"],
+  world:["Coconut milk","Curry paste","Gochujang","Harissa","Jackfruit","Kimchi","Miso paste","Noodles","Plantain","Poppadoms","Rice noodles","Soy sauce","Sriracha","Tahini","Tortillas (corn)","Wasabi"],
+  frozen:["Chips","Frozen berries","Frozen peas","Frozen pizza","Frozen prawns","Frozen sweetcorn","Frozen veg (mixed)","Ice cream","Ice lollies","Oven chips","Waffles"],
+  cupboard:["Baked beans","Baking powder","Bicarbonate of soda","Black beans","Cereal","Chickpeas","Chopped tomatoes","Cocoa","Couscous","Flour (plain)","Flour (self-raising)","Golden syrup","Gravy granules","Honey","Jam","Ketchup","Kidney beans","Lentils","Mayonnaise","Mustard","Oats","Olive oil","Olives","Pasta","Pasta sauce","Peanut butter","Pepper","Pesto","Porridge oats","Quinoa","Rice (basmati)","Rice (brown)","Salt","Stock cubes","Sugar","Tinned tuna","Vanilla extract","Vegetable oil","Vinegar"],
+  spices:["Chilli flakes","Cinnamon","Cumin","Curry powder","Garam masala","Mixed herbs","Oregano","Paprika","Turmeric"],
+  snacks:["Biscuits","Chocolate","Crackers","Crisps","Dried fruit","Nuts","Popcorn","Rice cakes","Sweets"],
+  drinks:["Beer","Coffee","Cordial","Fizzy drinks","Juice","Sparkling water","Still water","Tea bags","Wine"],
+  household:["Bin bags","Bleach","Cling film","Dishwasher tablets","Foil","Kitchen roll","Laundry detergent","Sponges","Washing-up liquid"],
+  toiletries:["Conditioner","Deodorant","Hand soap","Razors","Shampoo","Shower gel","Toilet roll","Toothbrush","Toothpaste"],
+  baby:["Baby food","Baby wipes","Nappies"],
+  pets:["Cat food","Cat litter","Dog food","Dog treats"]
+};
+var AISLES = [["veg","Fruit & veg"],["bakery","Bakery"],["dairy","Dairy & eggs"],["meat","Meat & fish"],["chilled","Chilled"],["veggie","Vegetarian & vegan"],["frozen","Frozen"],["cupboard","Cupboard"],["spices","Herbs & spices"],["world","World foods"],["snacks","Snacks"],["drinks","Drinks"],["household","Household"],["toiletries","Toiletries"],["baby","Baby"],["pets","Pets"],["other","Other"]];
+var ALIAS = {milk:"Milk","semi skimmed":"Milk","whole milk":"Milk",loo:"Toilet roll","loo roll":"Toilet roll","toilet paper":"Toilet roll","bog roll":"Toilet roll",nanas:"Bananas",avo:"Avocados",avos:"Avocados",spuds:"Potatoes",cheese:"Cheddar",bread:"Bread (white)",wraps:"Tortilla wraps",tortillas:"Tortilla wraps","fizzy water":"Sparkling water",teabags:"Tea bags",tea:"Tea bags","washing up liquid":"Washing-up liquid","fairy liquid":"Washing-up liquid","kitchen towel":"Kitchen roll","paper towel":"Kitchen roll",houmous:"Hummus",humous:"Hummus",hoummous:"Hummus",mince:"Beef mince",chicken:"Chicken breasts","peas":"Frozen peas","toms":"Tomatoes","tinned tomatoes":"Chopped tomatoes","tinned toms":"Chopped tomatoes",coke:"Fizzy drinks","orange juice":"Juice",oj:"Juice",bikkies:"Biscuits",choc:"Chocolate",crisps:"Crisps",eggs:"Eggs",egg:"Eggs",yogurt:"Yoghurt","greek yogurt":"Greek yoghurt",rice:"Rice (basmati)",spaghetti:"Pasta",penne:"Pasta",fusilli:"Pasta",flour:"Flour (plain)",oil:"Olive oil",beans:"Baked beans",salad:"Salad leaves"};
+var RULES = [
+  [/\b(apple|banana|orange|lemon|lime|grape|berr|melon|mango|pear|peach|plum|cherr|kiwi|pineapple|tomato|potato|onion|garlic|ginger|pepper|carrot|broccoli|cauli|cabbage|lettuce|spinach|kale|rocket|leek|celery|courgette|aubergine|cucumber|mushroom|corn|bean|pea|herb|basil|coriander|parsley|mint|dill|chilli|salad|veg|fruit|avocado|beetroot|radish|squash|pumpkin|sprout|asparagus|fennel)/, "veg"],
+  [/\b(bread|loaf|bagel|baguette|roll|bun|croissant|crumpet|naan|pitta|wrap|tortilla|cake|muffin|scone|pastry|brioche)/, "bakery"],
+  [/\b(milk|butter|cheese|cheddar|yog|cream|egg|feta|mozzarella|parmesan|halloumi|brie|kefir|margarine|spread)/, "dairy"],
+  [/\b(chicken|beef|pork|lamb|turkey|mince|sausage|bacon|ham|steak|fish|salmon|cod|tuna|prawn|haddock|mackerel|burger)/, "meat"],
+  [/\b(tofu|quorn|tempeh|seitan|falafel|vegan|veggie|vegetarian|meat.?free|plant.?based|linda|beyond)/, "veggie"],
+  [/\b(coconut milk|soy|soya sauce|sriracha|harissa|gochujang|miso|tahini|plantain|jackfruit|poppadom|naan|kimchi|wasabi|curry paste|rice noodle|world food)/, "world"],
+  [/\b(hummus|houmous|dip|ready meal|fresh pasta|coleslaw|guacamole|tzatziki)/, "chilled"],
+  [/\b(frozen|ice cream|lolly|lollies|chips|fish finger|pizza|waffle)/, "frozen"],
+  [/\b(spice|cumin|turmeric|paprika|cinnamon|oregano|thyme|rosemary|curry powder|garam|masala|chilli flakes|nutmeg|cardamom|clove|coriander seed)/, "spices"],
+  [/\b(pasta|rice|noodle|oat|cereal|flour|sugar|salt|oil|vinegar|sauce|ketchup|mayo|mustard|jam|honey|syrup|tin|can|chickpea|lentil|dhal|dal|stock|soup|quinoa|couscous|nut butter|peanut|tahini|pesto|cocoa|baking|yeast|vanilla|pickle|olive)/, "cupboard"],
+  [/\b(crisp|biscuit|cookie|chocolate|sweet|candy|cracker|popcorn|nut|dried|snack|bar|rice cake)/, "snacks"],
+  [/\b(water|juice|coffee|tea|squash|cordial|drink|beer|wine|cider|gin|vodka|whisky|lemonade|cola|coke|kombucha)/, "drinks"],
+  [/\b(bin bag|bleach|detergent|washing|dishwasher|sponge|cloth|foil|cling|kitchen roll|cleaner|spray|batter|candle|matches|light bulb)/, "household"],
+  [/\b(toilet roll|loo roll|shampoo|conditioner|soap|toothpaste|toothbrush|deodorant|razor|shower|tampon|pad|plaster|paracetamol|ibuprofen|vitamin|sun cream|moisturi|wipes)/, "toiletries"],
+  [/\b(nappy|nappies|baby|formula)/, "baby"],
+  [/\b(cat|dog|pet|litter)/, "pets"]
+];
+
+(function(){
+  var KEY = "listbyaisle-v1";
+  var S = {picked:{}, got:{}, own:[], org:{}, removed:[]};
+  var orgMode = false;
+  var onlySel = false, query = "";
+  var OKEY = "listbyaisle-open-v1", OPEN = {};
+  try{ OPEN = JSON.parse(localStorage.getItem(OKEY) || "{}") || {}; }catch(e){ OPEN = {}; }
+  var $ = function(id){ return document.getElementById(id); };
+  var norm = function(s){ return String(s).toLowerCase().replace(/[’']/g,"").replace(/[^a-z0-9&\s]/g," ").replace(/\s+/g," ").trim(); };
+  var esc = function(s){ return String(s).replace(/[&<>"]/g,function(c){ return ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]; }); };
+  var label = {}; AISLES.forEach(function(a){ label[a[0]] = a[1]; });
+
+  var items = [], byNorm = {};
+  Object.keys(CAT).forEach(function(a){ CAT[a].forEach(function(n){ var it = {n:n, a:a}; items.push(it); byNorm[norm(n)] = it; }); });
+  function find(n){ n = norm(n); if(byNorm[n]) return byNorm[n]; if(ALIAS[n]) return byNorm[norm(ALIAS[n])] || null;
+    if(n.length > 3 && n.slice(-1) === "s" && byNorm[n.slice(0,-1)]) return byNorm[n.slice(0,-1)];
+    if(byNorm[n + "s"]) return byNorm[n + "s"]; return null; }
+  function classify(n){ var q = norm(n); for(var i = 0; i < RULES.length; i++){ if(RULES[i][0].test(q)) return RULES[i][1]; } return "other"; }
+
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} if(typeof syncPush === "function") syncPush(); }
+  function load(){ try{ var r = localStorage.getItem(KEY); if(r){ var v = JSON.parse(r); if(v && typeof v === "object"){ S.picked = v.picked || {}; S.got = v.got || {}; S.own = v.own || []; S.org = v.org || {}; S.removed = v.removed || []; } } }catch(e){} }
+  function nPicked(){ return Object.keys(S.picked).length + S.own.length; }
+  function nGot(){ var c = 0; Object.keys(S.picked).forEach(function(n){ if(S.got[n]) c++; }); S.own.forEach(function(o){ if(o.got) c++; }); return c; }
+
+  function chosen(){
+    var out = [];
+    AISLES.forEach(function(a){
+      var rows = items.filter(function(it){ return it.a === a[0] && S.picked[it.n]; }).map(function(it){ return {n:it.n + (S.org[it.n] ? " (organic)" : ""), got:!!S.got[it.n]}; });
+      S.own.forEach(function(o){ if(o.a === a[0]) rows.push({n:o.n + (o.org ? " (organic)" : ""), got:!!o.got}); });
+      if(rows.length) out.push({label:a[1], rows:rows});
+    });
+    return out;
+  }
+  function asText(){
+    var lines = [];
+    chosen().forEach(function(g){ lines.push(g.label.toUpperCase()); g.rows.forEach(function(r){ lines.push((r.got ? "☑ " : "☐ ") + r.n); }); lines.push(""); });
+    return lines.join("\n").trim();
+  }
+
+  function render(){
+    var q = norm(query), html = "", shown = 0;
+    AISLES.forEach(function(a){
+      var g = items.filter(function(it){ return it.a === a[0] && (!onlySel || S.picked[it.n]) && (!q || norm(it.n).indexOf(q) >= 0 || (ALIAS[q] && norm(ALIAS[q]) === norm(it.n))); });
+      var og = []; S.own.forEach(function(o, i){ if(o.a === a[0] && (!q || norm(o.n).indexOf(q) >= 0)) og.push([o, i]); });
+      if(!g.length && !og.length) return;
+      shown += g.length + og.length;
+      var pk = g.filter(function(it){ return S.picked[it.n]; }).length + og.length;
+      var open = !!q || onlySel || !!OPEN[a[0]];
+      html += '<h2 class="aisle"><button class="ah" data-a="'+a[0]+'" aria-expanded="'+open+'"><span class="c"></span>'+esc(a[1])+'<span class="n">'+(pk ? pk+' on list' : '')+'</span></button></h2><div class="grid"'+(open ? '' : ' hidden')+'>';
+      og.forEach(function(p){ html += '<button class="it own'+(p[0].got?" got":"")+'" data-own="'+p[1]+'" aria-pressed="true"><span class="box"></span><span><span class="nm">'+esc(p[0].n)+'</span>'+'<span class="leaf'+(p[0].org ? '' : ' off')+'" role="button" title="Organic on/off">organic</span>'+'<small>added by you · press and hold to remove</small></span></button>'; });
+      g.forEach(function(it){ var on = !!S.picked[it.n], got = on && !!S.got[it.n];
+        html += '<button class="it'+(got?" got":"")+'" data-n="'+esc(it.n)+'" aria-pressed="'+on+'"><span class="box"></span><span><span class="nm">'+esc(it.n)+'</span>'+(on ? '<span class="leaf'+(S.org[it.n] ? '' : ' off')+'" role="button" title="Organic on/off">organic</span>' : '')+'</span></button>'; });
+      html += '</div>';
+    });
+    if(S.removed.length && !q){
+      var ropen = OPEN._removed !== 0;
+      html += '<h2 class="aisle rm"><button class="ah" data-a="_removed" aria-expanded="'+ropen+'"><span class="c"></span>Removed<span class="n">'+S.removed.length+' · tap to put back</span></button></h2><div class="grid"'+(ropen ? '' : ' hidden')+'>';
+      S.removed.forEach(function(r, i){ html += '<button class="it rm" data-rm="'+i+'"><span class="box"></span><span><span class="nm">'+esc(r.n)+'</span>'+(r.org ? '<span class="leaf">organic</span>' : '')+'</span></button>'; });
+      html += '<div class="rmfoot"><button class="link quiet" id="rmForget" type="button">Forget these</button></div></div>';
+      shown += S.removed.length;
+    }
+    $("out").innerHTML = shown ? html : '<div class="empty"><b>'+(onlySel ? "Nothing on your list yet" : "Nothing matches that")+'</b>'+(onlySel ? "Go to All aisles and tap what you need." : "Press enter to add “"+esc(query.trim())+"” anyway — it gets sorted into an aisle.")+'</div>';
+    var p = nPicked();
+    $("count").innerHTML = p ? '<span><b>'+p+'</b> on the list · '+nGot()+' in the trolley</span>' : '<span>Nothing on the list yet</span>';
+    $("onlySel").setAttribute("aria-pressed", String(onlySel)); $("onlySel").setAttribute("aria-selected", String(onlySel)); $("tabAll").setAttribute("aria-selected", String(!onlySel));
+    $("tabN").textContent = p ? String(p) : "";
+    $("org").setAttribute("aria-pressed", String(orgMode));
+    ["copy","wa","mail","clear"].forEach(function(id){ $(id).disabled = !p; });
+  }
+  function park(r){ S.removed = S.removed.filter(function(x){ return norm(x.n) !== norm(r.n); }); S.removed.unshift(r); if(S.removed.length > 40) S.removed.length = 40; }
+  function restore(i){ var r = S.removed.splice(i, 1)[0]; if(!r) return;
+    if(r.own){ if(!S.own.some(function(o){ return norm(o.n) === norm(r.n); })) S.own.push({n:r.n, a:r.own.a, got:false, org:!!r.org}); }
+    else { S.picked[r.n] = 1; delete S.got[r.n]; if(r.org) S.org[r.n] = 1; else delete S.org[r.n]; }
+    save(); render(); toast("Back on the list: " + r.n); }
+  function toast(m){ var d = document.createElement("div"); d.className = "toast"; d.textContent = m; document.body.appendChild(d); setTimeout(function(){ d.remove(); }, 2200); }
+
+  function addOne(v){
+    v = v.trim().replace(/^[-*\u2022\u2610\u2611\u2612\[\]x ]+/i, "").replace(/^\d+\s*x?\s+/i, "").trim(); if(!v) return false;
+    var org = orgMode, m = v.match(/^organic\s+(.+)$/i); if(m){ org = true; v = m[1]; }
+    var hit = find(v);
+    if(hit){ S.picked[hit.n] = 1; if(org) S.org[hit.n] = 1; return hit.n + (org ? " (organic)" : ""); }
+    var dup = S.own.some(function(o){ return norm(o.n) === norm(v); });
+    if(!dup){ var a = classify(v); S.own.push({n:v, a:a, got:false, org:org}); }
+    return v;
+  }
+  // Turn any pasted text into item names: lines, commas, semicolons, bullets, numbering, "and", slashes, tabs.
+  // A long run of words with no separators is scanned for known items (longest names first).
+  var known = null;
+  function knownNames(){ if(known) return known; known = [];
+    items.forEach(function(it){ known.push([norm(it.n), it.n]); });
+    Object.keys(ALIAS).forEach(function(k){ known.push([norm(k), k]); });
+    known.sort(function(a,b){ return b[0].length - a[0].length; }); return known; }
+  function pickKnown(text){ var q = " " + norm(text) + " ", out = [];
+    knownNames().forEach(function(p){ var k = " " + p[0] + " ", i = q.indexOf(k);
+      while(i > -1){ out.push([i, p[1]]); q = q.slice(0, i) + " " + new Array(p[0].length + 1).join("#") + " " + q.slice(i + k.length); i = q.indexOf(k); } });
+    out.sort(function(a,b){ return a[0] - b[0]; }); return out.map(function(x){ return x[1]; }); }
+  function splitRaw(t){
+    var parts = String(t).replace(/\r/g, "")
+      .replace(/[•●▪–—☐☑☒✓✔✅❌]/g, "\n")
+      .split(/[\n,;|\/\t]+|\.\s+|\s+(?:and|&|\+)\s+|\s{2,}/i), out = [];
+    var filler = /^(?:can you|could you|please|pls|get|buy|grab|pick up|some|a|an|the|we need|need|also|and|more)\s+|\s+(?:please|pls|thanks|ta|too|as well)$/i;
+    parts.forEach(function(p){
+      p = p.replace(/^[\s\-*:)\]]*(?:\d+[.)\]:]\s*)?/, "").replace(/[.\s]+$/, "").trim();
+      var prev; do { prev = p; p = p.replace(filler, "").trim(); } while(p && p !== prev);
+      if(!p || /^\d+$/.test(p)) return;
+      if(find(p) || /^\d+\s*x?\s+/i.test(p) || /^organic\s/i.test(p)) { out.push(p); return; }
+      var hits = pickKnown(p); if(hits.length) hits.forEach(function(h){ out.push(h); }); else out.push(p);
+    });
+    return out;
+  }
+  function addTyped(v){
+    var r = addOne(v); if(!r) return;
+    toast("Added " + r);
+    query = ""; $("q").value = ""; save(); render();
+  }
+  $("pasteOpen").addEventListener("click", function(){ $("paste").hidden = false; $("pasteText").focus(); $("paste").scrollIntoView({block:"center"}); });
+  $("pasteCancel").addEventListener("click", function(){ $("paste").hidden = true; });
+  $("pasteGo").addEventListener("click", function(){
+    var parts = splitRaw($("pasteText").value), n = 0;
+    parts.forEach(function(x){ if(addOne(x)) n++; });
+    if(!n){ toast("Nothing to sort yet"); return; }
+    $("pasteText").value = ""; $("paste").hidden = true; save(); onlySel = true; render();
+    toast(n + " item" + (n === 1 ? "" : "s") + " sorted by aisle");
+  });
+
+  $("out").addEventListener("click", function(e){
+    var h = e.target.closest(".ah");
+    if(e.target.closest("#rmForget")){ if(confirm("Forget the removed items?")){ S.removed = []; save(); render(); } return; }
+    if(h){ var k = h.dataset.a; if((query || onlySel) && k !== "_removed") return; if(k === "_removed"){ OPEN._removed = OPEN._removed === 0 ? 1 : 0; } else if(OPEN[k]) delete OPEN[k]; else OPEN[k] = 1;
+      try{ localStorage.setItem(OKEY, JSON.stringify(OPEN)); }catch(x){} render(); return; }
+    var b = e.target.closest(".it"); if(!b) return;
+    if(b.dataset.rm !== undefined){ restore(+b.dataset.rm); return; }
+    if(e.target.closest(".leaf")){
+      if(b.dataset.own !== undefined){ var oo = S.own[+b.dataset.own]; if(oo) oo.org = !oo.org; }
+      else { if(S.org[b.dataset.n]) delete S.org[b.dataset.n]; else S.org[b.dataset.n] = 1; }
+      save(); render(); return; }
+    if(b.dataset.own !== undefined){ var o = S.own[+b.dataset.own]; if(o){ o.got = !o.got; save(); render(); } return; }
+    var n = b.dataset.n;
+    if(!S.picked[n]){ S.picked[n] = 1; if(orgMode) S.org[n] = 1; } else if(!S.got[n]) S.got[n] = 1; else { park({n:n, org:!!S.org[n]}); delete S.picked[n]; delete S.got[n]; delete S.org[n]; }
+    save(); render();
+  });
+  var holdT = null;
+  $("out").addEventListener("pointerdown", function(e){ var b = e.target.closest(".it.own"); if(!b) return; var i = +b.dataset.own; holdT = setTimeout(function(){ var o = S.own[i]; if(o) park({n:o.n, org:!!o.org, own:{a:o.a}}); S.own.splice(i,1); save(); render(); toast("Removed"); }, 600); });
+  ["pointerup","pointerleave","pointercancel"].forEach(function(ev){ $("out").addEventListener(ev, function(){ clearTimeout(holdT); }); });
+  $("q").addEventListener("input", function(){ query = this.value; render(); });
+  $("q").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); addTyped(this.value); } });
+  $("onlySel").addEventListener("click", function(){ onlySel = true; render(); });
+  $("tabAll").addEventListener("click", function(){ onlySel = false; render(); });
+  $("org").addEventListener("click", function(){ orgMode = !orgMode; render(); toast(orgMode ? "Organic on \u2014 anything you add now is marked organic" : "Organic off"); });
+  $("clear").addEventListener("click", function(){ if(!nPicked()) return; if(!confirm("Clear the whole list?")) return; Object.keys(S.picked).forEach(function(n){ park({n:n, org:!!S.org[n]}); }); S.own.forEach(function(o){ park({n:o.n, org:!!o.org, own:{a:o.a}}); }); S = {picked:{}, got:{}, own:[], org:{}, removed:S.removed}; save(); render(); });
+  $("copy").addEventListener("click", function(){
+    var t = asText(); if(!t) return;
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ toast("Copied"); }, function(){ toast("Could not copy"); }); }
+    else { toast("Copy not available here"); }
+  });
+  $("wa").addEventListener("click", function(){ var t = asText(); if(!t) return; var msg = "Shopping list\n\n" + t;
+    if(navigator.share){ navigator.share({title:"Shopping list", text: msg}).catch(function(){}); return; }
+    window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank"); });
+  $("mail").addEventListener("click", function(){ var t = asText(); if(!t) return; location.href = "mailto:?subject=" + encodeURIComponent("Shopping list") + "&body=" + encodeURIComponent(t); });
+
+  load(); render();
+
+  // ---------- Shared lists (Supabase) ----------
+  // A shared list has a random code. The code is the only key: whoever has the link has the list.
+  var SB_URL = "https://nlbeqaoffratriysazrx.supabase.co";
+  var SB_KEY = "sb_publishable_HjyFCCwqTjqeAIV1bh28ww_li-Rw7CZ";
+  var CKEY = "listbyaisle-code-v1", CODE = "", chan = null, pushT = null, lastSent = "", applying = false;
+  function sbHeaders(){ return {"Content-Type":"application/json", "apikey":SB_KEY, "Authorization":"Bearer " + SB_KEY}; }
+  function rpc(fn, body){ return fetch(SB_URL + "/rest/v1/rpc/" + fn, {method:"POST", headers:sbHeaders(), body:JSON.stringify(body)}).then(function(r){ if(!r.ok) throw new Error("rpc " + r.status); return r.text(); }).then(function(t){ return t ? JSON.parse(t) : null; }); }
+  function newCode(){ var a = "abcdefghjkmnpqrstuvwxyz23456789", o = "", c = new Uint32Array(12); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(c) : c.forEach(function(_, i){ c[i] = Math.random() * 1e9; }); for(var i = 0; i < 12; i++) o += a[c[i] % a.length]; return o; }
+  function shareUrl(){ return "https://listbyaisle.com/#l=" + CODE; }
+  function snapshot(){ return JSON.stringify({picked:S.picked, got:S.got, own:S.own, org:S.org, removed:S.removed}); }
+  function applyRemote(d){ if(!d || typeof d !== "object") return; var j = JSON.stringify({picked:d.picked || {}, got:d.got || {}, own:d.own || [], org:d.org || {}, removed:d.removed || []}); if(j === snapshot()) return;
+    applying = true; S.picked = d.picked || {}; S.got = d.got || {}; S.own = d.own || []; S.org = d.org || {}; S.removed = d.removed || []; try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} lastSent = snapshot(); render(); applying = false; }
+  function syncPush(){ if(!CODE || applying) return; clearTimeout(pushT); pushT = setTimeout(function(){
+    var j = snapshot(); if(j === lastSent) return; lastSent = j;
+    rpc("save_list", {code:CODE, payload:JSON.parse(j)}).catch(function(){ lastSent = ""; });
+    if(chan) chan.send({type:"broadcast", event:"update", payload:JSON.parse(j)});
+  }, 350); }
+  function syncPull(){ if(!CODE) return Promise.resolve(); return rpc("get_list", {code:CODE}).then(function(d){ if(d) applyRemote(d); }).catch(function(){}); }
+  function listen(){ if(!CODE || chan) return;
+    function go(){ try{ var sb = supabase.createClient(SB_URL, SB_KEY); chan = sb.channel("list-" + CODE);
+      chan.on("broadcast", {event:"update"}, function(m){ applyRemote(m.payload); }).subscribe(); }catch(e){} }
+    if(window.supabase) go(); else { var sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"; sc.onload = go; document.head.appendChild(sc); } }
+  function showShared(){ $("shared").hidden = !CODE; if(CODE) $("shareUrl").value = shareUrl(); $("share").dataset.on = CODE ? "1" : "0"; $("share").textContent = CODE ? "Shared" : "Share link"; }
+  function startShare(){ CODE = newCode(); try{ localStorage.setItem(CKEY, CODE); }catch(e){} history.replaceState(null, "", "#l=" + CODE);
+    lastSent = ""; syncPush(); listen(); showShared(); sendLink(); }
+  function sendLink(){ var u = $("shareUrl"); u.value = shareUrl();
+    (navigator.clipboard ? navigator.clipboard.writeText(shareUrl()) : Promise.reject()).then(function(){ toast("Link copied – send it to whoever shops with you"); }, function(){ u.focus(); u.select(); toast("Select the link and copy it"); }); }
+  function stopShare(){ if(!confirm("Stop sharing? Your list stays on this phone; the link stops updating it.")) return;
+    CODE = ""; try{ localStorage.removeItem(CKEY); }catch(e){} history.replaceState(null, "", location.pathname); if(chan){ try{ chan.unsubscribe(); }catch(e){} chan = null; } showShared(); }
+  $("share").addEventListener("click", function(){ if(CODE) sendLink(); else startShare(); });
+  $("shareLink").addEventListener("click", sendLink);
+  $("shareStop").addEventListener("click", stopShare);
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden) syncPull(); });
+  window.addEventListener("focus", syncPull);
+  (function initShare(){
+    var m = location.hash.match(/[#&]l=([a-z0-9]{10,14})/); if(m){ CODE = m[1]; try{ localStorage.setItem(CKEY, CODE); }catch(e){} }
+    else { try{ CODE = localStorage.getItem(CKEY) || ""; }catch(e){} }
+    if(!CODE) return; showShared();
+    syncPull().then(function(){ if(m && !lastSent){ /* joined a link that has no list yet – push ours */ lastSent = ""; syncPush(); } listen(); });
+  })();
+
+
+  // Feedback goes straight from the page to FEEDBACK_URL (a Formspree form). Until that is set, it opens the email app.
+  var FEEDBACK_URL = "";
+  $("fbsend").addEventListener("click", function(){
+    var note = $("fbtext").value.trim();
+    if(!note){ toast("Write a line first"); return; }
+    if(!FEEDBACK_URL){
+      location.href = "mailto:hello@listbyaisle.com?subject=" + encodeURIComponent("List by Aisle feedback") + "&body=" + encodeURIComponent(note + "\n\nSent from listbyaisle.com");
+      return;
+    }
+    $("fbsend").disabled = true;
+    fetch(FEEDBACK_URL, {method:"POST", headers:{"Content-Type":"application/json", "Accept":"application/json"}, body: JSON.stringify({message: note, page: location.href})})
+      .then(function(r){ if(!r.ok) throw new Error(); $("fbtext").value = ""; toast("Thanks – sent"); })
+      .catch(function(){ toast("Couldn't send just now – try again in a minute"); })
+      .then(function(){ $("fbsend").disabled = false; });
+  });
+})();
+</script>
+</body>
+</html>
