@@ -297,6 +297,15 @@ h2.aisle.rm .ah{color:var(--muted)}
 #mine .it .qty{font-size:.78rem;font-weight:400;color:var(--muted);margin-left:6px;border-bottom:1px dotted var(--muted)}
 #mine .it .qn{font-size:.72rem;font-weight:400;color:var(--muted);opacity:.55;margin-left:6px;border-bottom:1px dotted currentColor}
 #mine .it.got .qn{display:none}
+#mine .mrow{display:flex;align-items:center;flex-wrap:wrap;gap:2px 6px;border-bottom:1px dashed var(--line);padding:1px 0}
+#mine .mrow .it{flex:1 1 150px;min-width:0;width:auto;border:0;padding:8px 4px}
+#mine .mctl{display:flex;align-items:center;gap:3px;flex:1 1 140px;min-width:0;padding:0 4px 0 0}
+#mine .mctl .qm,#mine .mctl .qp{font:inherit;width:22px;height:22px;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--ink);cursor:pointer;line-height:1;font-size:.9rem;flex:none;padding:0}
+#mine .mctl .qm:disabled{opacity:.3;cursor:default}
+#mine .mctl .qv{min-width:16px;text-align:center;font-weight:700;font-size:.85rem;font-variant-numeric:tabular-nums}
+#mine .mctl .qc{flex:1 1 70px;min-width:0;font:inherit;font-size:.78rem;padding:3px 7px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink);margin-left:4px;height:24px}
+#mine .mctl .qc:focus{outline:2px solid var(--second, var(--purple));outline-offset:-1px;border-color:transparent}
+#mine .mctl .qc::placeholder{color:var(--faint,#9aa192)}
 #mine .it .qedit{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:6px 0 2px;width:100%}
 #mine .it .qedit input{font:inherit;font-size:.9rem;padding:6px 8px;border:1.5px solid var(--second, var(--purple));border-radius:8px;min-width:0}
 #mine .it .qedit .qe-q{width:64px;text-align:center}
@@ -361,7 +370,7 @@ h2.aisle.rm .ah{color:var(--muted)}
 </div>
     <div class="dfoot">
       <span class="count" id="countWrap"><span id="count"></span></span>
-      <button class="btn primary" id="mineShare" type="button" aria-expanded="false" aria-controls="shareBox">Share this list</button>
+      <button class="btn primary" id="mineShare" type="button" aria-expanded="false" aria-controls="shareBox">Share or copy list</button>
     </div>
   </div>
 </section>
@@ -522,10 +531,11 @@ var RULES = [
   }
 
   function qtyTag(n){ var q = S.qty && S.qty[n]; return q ? '<span class="qty" role="button" title="Change note">'+esc(q)+'</span>' : ''; }
-  function noteText(n){ var q = (S.qty && S.qty[n]) || "", c = (S.note && S.note[n]) || "", parts = []; if(q) parts.push(/^\d+$/.test(q) ? "× " + q : q); if(c) parts.push(c); return parts.join(" · "); }
-  function noteTag(n){ var t = noteText(n); return t ? '<span class="qty" role="button" title="Change quantity or comment">'+esc(t)+'</span>' : '<span class="qn" role="button" title="Quantity or a comment">qty / note</span>'; }
-  function mineBtn(it){ var got = !!S.got[it.n]; return '<button class="it'+(got?" got":"")+'" data-n="'+esc(it.n)+'" aria-pressed="'+got+'"><span class="box"></span><span><span class="nm">'+esc(it.n)+'</span>'+noteTag(it.n)+'<span class="leaf'+(S.org[it.n] ? '' : ' off')+'" role="button" title="Organic on/off">organic</span>'+'</span></button>'; }
-  function mineOwn(p, i){ return '<button class="it own'+(p.got?" got":"")+'" data-own="'+i+'" aria-pressed="'+!!p.got+'"><span class="box"></span><span><span class="nm">'+esc(p.n)+'</span>'+noteTag(p.n)+'<span class="leaf'+(p.org ? '' : ' off')+'" role="button" title="Organic on/off">organic</span>'+(p.got ? '' : '<small><span class="by">added by you · </span><span class="mv" role="button">change aisle</span></small>')+'</span></button>'; }
+  function noteText(n){ var q = (S.qty && S.qty[n]) || "", c = (S.note && S.note[n]) || "", parts = []; if(q && q !== "1") parts.push(/^\d+$/.test(q) ? "× " + q : q); if(c) parts.push(c); return parts.join(" · "); }
+  function noteTag(n){ var t = noteText(n); return t ? '<span class="qty">'+esc(t)+'</span>' : ''; }
+  function ctl(n, ref){ var q = parseInt((S.qty || {})[n], 10) || 1, c = (S.note || {})[n] || ""; return '<div class="mctl" '+ref+'><button type="button" class="qm" aria-label="One fewer"'+(q <= 1 ? ' disabled' : '')+'>&minus;</button><span class="qv" aria-label="Quantity">'+q+'</span><button type="button" class="qp" aria-label="One more">+</button><input class="qc" type="text" maxlength="60" placeholder="comment" value="'+esc(c)+'" aria-label="Comment"></div>'; }
+  function mineBtn(it){ var got = !!S.got[it.n]; return '<div class="mrow'+(got?" got":"")+'"><button class="it'+(got?" got":"")+'" data-n="'+esc(it.n)+'" aria-pressed="'+got+'"><span class="box"></span><span><span class="nm">'+esc(it.n)+'</span>'+(got ? noteTag(it.n) : '')+'<span class="leaf'+(S.org[it.n] ? '' : ' off')+'" role="button" title="Organic on/off">organic</span>'+'</span></button>'+(got ? '' : ctl(it.n, 'data-n="'+esc(it.n)+'"'))+'</div>'; }
+  function mineOwn(p, i){ return '<div class="mrow'+(p.got?" got":"")+'"><button class="it own'+(p.got?" got":"")+'" data-own="'+i+'" aria-pressed="'+!!p.got+'"><span class="box"></span><span><span class="nm">'+esc(p.n)+'</span>'+(p.got ? noteTag(p.n) : '')+'<span class="leaf'+(p.org ? '' : ' off')+'" role="button" title="Organic on/off">organic</span>'+(p.got ? '' : '<small><span class="by">added by you · </span><span class="mv" role="button">change aisle</span></small>')+'</span></button>'+(p.got ? '' : ctl(p.n, 'data-own="'+i+'"'))+'</div>'; }
   function draw(mine){
     var q = mine ? "" : norm(query), html = "", shown = 0, grpShown = false;
     if(q){
@@ -707,20 +717,12 @@ var RULES = [
     if(e.type === "click" && e.target.closest("button")){ if(inp.value.trim()) addToAisle(key, inp.value); else inp.focus(); }
   }
   $("out").addEventListener("input", aisleBar); $("out").addEventListener("keydown", aisleBar); $("out").addEventListener("click", aisleBar);
-  function noteEdit(b){ var n = b.dataset.own !== undefined ? (S.own[+b.dataset.own] || {}).n : b.dataset.n; if(!n) return; var tag = b.querySelector(".qty, .qn"); if(!tag) return;
-    S.qty = S.qty || {}; S.note = S.note || {};
-    var box = document.createElement("span"); box.className = "qedit";
-    var qi = document.createElement("input"); qi.className = "qe-q"; qi.type = "text"; qi.inputMode = "numeric"; qi.placeholder = "qty"; qi.maxLength = 6; qi.value = S.qty[n] || ""; qi.setAttribute("aria-label", "Quantity");
-    var ci = document.createElement("input"); ci.className = "qe-c"; ci.type = "text"; ci.placeholder = "comment – e.g. restaurant style"; ci.maxLength = 60; ci.value = S.note[n] || ""; ci.setAttribute("aria-label", "Comment"); ci.setAttribute("enterkeyhint", "done");
-    var ok = document.createElement("button"); ok.type = "button"; ok.className = "qe-ok"; ok.textContent = "Done";
-    box.appendChild(qi); box.appendChild(ci); box.appendChild(ok); tag.replaceWith(box); (qi.value ? ci : qi).focus();
-    var done = false; function fin(){ if(done) return; done = true; var q = qi.value.trim(), c = ci.value.trim(); if(q) S.qty[n] = q; else delete S.qty[n]; if(c) S.note[n] = c; else delete S.note[n]; save(); render(); }
-    [qi, ci].forEach(function(i){ i.addEventListener("keydown", function(ev){ if(ev.key === "Enter"){ ev.preventDefault(); if(i === qi){ ci.focus(); } else fin(); } if(ev.key === "Escape"){ done = true; render(); } }); i.addEventListener("click", function(ev){ ev.stopPropagation(); }); });
-    ok.addEventListener("click", function(ev){ ev.stopPropagation(); fin(); });
-    box.addEventListener("focusout", function(ev){ if(!box.contains(ev.relatedTarget)) setTimeout(function(){ if(!box.contains(document.activeElement)) fin(); }, 60); }); }
+  function ctlKey(c){ return c.dataset.own !== undefined ? ((S.own[+c.dataset.own] || {}).n || "") : c.dataset.n; }
+  $("mine").addEventListener("input", function(e){ var i = e.target.closest(".qc"); if(!i) return; var n = ctlKey(i.closest(".mctl")); if(!n) return; S.note = S.note || {}; var v = i.value.trim(); if(v) S.note[n] = v; else delete S.note[n]; save(); $("paper").textContent = nPicked() ? asText() : "Nothing on the list yet"; });
+  $("mine").addEventListener("keydown", function(e){ if(e.target.closest(".qc") && e.key === "Enter"){ e.preventDefault(); e.target.blur(); } });
   function onListClick(e){
-    if(e.target.closest(".qedit")){ e.stopPropagation(); return; }
-    if(e.target.closest("#mine") && e.target.closest(".qty, .qn")){ e.stopPropagation(); e.preventDefault(); noteEdit(e.target.closest(".it")); return; }
+    var mc = e.target.closest(".mctl");
+    if(mc){ e.stopPropagation(); var bq = e.target.closest(".qm, .qp"); if(!bq) return; var kn = ctlKey(mc); if(!kn) return; S.qty = S.qty || {}; var cur = parseInt(S.qty[kn], 10) || 1, nx = Math.max(1, cur + (bq.classList.contains("qp") ? 1 : -1)); if(nx === 1) delete S.qty[kn]; else S.qty[kn] = String(nx); save(); render(); return; }
     if(e.target.closest(".qaddb")){ addTyped($("q").value); return; }
     if(e.target.closest(".addrow")) { e.stopPropagation(); return; }
     var gl = e.target.closest(".golist");
@@ -875,7 +877,7 @@ var RULES = [
   })();
   (function(){
     var sb = $("mineShare"), sx = $("shareBox");
-    sb.addEventListener("click", function(){ var open = sx.hidden; sx.hidden = !open; sb.setAttribute("aria-expanded", String(open)); sb.textContent = open ? "Hide sharing" : "Share this list"; if(open) setTimeout(function(){ sx.scrollIntoView({block:"start", behavior:"smooth"}); }, 30); });
+    sb.addEventListener("click", function(){ var open = sx.hidden; sx.hidden = !open; sb.setAttribute("aria-expanded", String(open)); sb.textContent = open ? "Hide sharing" : "Share or copy list"; if(open) setTimeout(function(){ sx.scrollIntoView({block:"start", behavior:"smooth"}); }, 30); });
     var fb = $("fbBtn"), fx = $("feedback");
     fb.addEventListener("click", function(){ var open = fx.hidden; fx.hidden = !open; fb.setAttribute("aria-expanded", String(open)); });
     var lb = $("listBtn"), lx = $("listBox");
