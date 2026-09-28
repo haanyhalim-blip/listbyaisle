@@ -1,4 +1,4 @@
-<!-- ListbyAisle v149 -->
+<!-- ListbyAisle v150 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -34,7 +34,7 @@
 :root{
   color-scheme:light;
   --bg:#eef2f0; --card:#fff; --line:#ddd7c9; --ink:#1f2a22; --muted:#66705f; --faint:#9aa192;
-  --green:#2f5d3a; --green-deep:#22452b; --green-wash:#e3ecdf; --accent:#c8552b; --accent-wash:#f7e3da; --purple:#6b4fa3; --purple-deep:#4a3477; --purple-wash:#e9e0f7;
+  --green:#2f5d3a; --green-deep:#22452b; --green-wash:#e3ecdf; --accent:#c8552b; --accent-wash:#f7e3da; --purple:#1f2a22; --purple-deep:#111813; --purple-wash:#eef0ee; /* My list colour: black (ink), like "by" in the logo – was purple */
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -105,8 +105,9 @@ body.searching #shopBox[hidden]{display:block}
 .mineb .tn:empty{display:none}
 #listSec{margin:0;padding:6px 12px 12px;background:#fff;border:1.5px solid var(--purple);border-radius:12px;box-shadow:0 3px 10px rgba(31,42,34,.06)}
 .vtog{display:inline-flex;margin:8px 0 4px;border:1.5px solid var(--line,#ddd);border-radius:999px;overflow:hidden;font-size:.85rem}.vtog button{font:inherit;border:0;background:transparent;color:inherit;padding:6px 12px;cursor:pointer}.vtog button[aria-pressed="true"]{background:var(--second, var(--purple));color:#fff}.vtog.green button[aria-pressed="true"]{background:var(--green)}#btog{margin:4px 0 8px}body.searching #btog{display:none}
-.lhead{display:flex;align-items:center;gap:10px;padding:6px 0 6px;border-bottom:1.5px solid var(--second, var(--purple))}
+.lhead{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:6px 0 8px;border-bottom:1.5px solid var(--second, var(--purple))}
 .stitle{color:var(--green-deep);margin:0 0 6px}
+.ltitle.stitle{color:var(--green-deep)}
 .sect.mine{color:var(--purple-deep);width:auto;gap:8px}
 .sect.mine .brand{font-size:1.25rem;margin-left:2px}
 #mineBody[hidden]{display:none}
@@ -118,10 +119,14 @@ body.searching #shopBox[hidden]{display:block}
 .dfoot{display:flex;gap:10px;flex-wrap:nowrap;align-items:center;justify-content:space-between;margin-top:16px;padding-top:0;border-top:0}
 .dfoot .btn{flex:0 0 auto}
 #mineShare{background:var(--purple);border-color:var(--purple)}
+.lhead .vtog{margin:0;font-size:.8rem}
+.lhead .vtog button{padding:5px 10px}
+.lhead .hshare{padding:6px 14px;font-size:.88rem;min-height:0;line-height:1.2}
+#listSec:has(#mineBody[hidden]) .lhead .vtog,#listSec:has(#mineBody[hidden]) .lhead .hshare{display:none}
 #mineShare:hover{background:var(--purple-deep);border-color:var(--purple-deep)}
 #shareBox .btn.primary{background:var(--purple);border-color:var(--purple)}
 #shareBox .btn.share{border-color:var(--purple);color:var(--purple-deep)}
-#mine .aisle .ah{color:#9b93b3;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 0 2px;margin:14px 0 0;background:none;border:0;border-radius:0;width:auto;display:inline-block;cursor:default}
+#mine .aisle .ah{color:#8a918a;font-size:.78rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 0 2px;margin:14px 0 0;background:none;border:0;border-radius:0;width:auto;display:inline-block;cursor:default}
 #mine .aisle .ah .c{display:none}
 #mine .grid{display:block;margin:0 0 4px}
 #mine .grid[hidden]{display:none}
@@ -372,10 +377,10 @@ h2.aisle.rm .ah{color:var(--muted)}
 <section id="listSec">
     <div class="lhead">
       <h2 class="ltitle"><button class="sect mine" id="mineBtn" type="button" aria-expanded="true" aria-controls="mineBody"><span class="c"></span>My list</button></h2>
-      <button class="link quiet" id="clear" type="button" hidden>Clear list</button>
+      <div class="vtog" id="vtog" hidden role="group" aria-label="How to show my list"><button type="button" data-v="aisle" aria-pressed="true">By aisle</button><button type="button" data-v="az" aria-pressed="false">A to Z</button></div>
+      <button class="btn primary hshare" id="mineShare" type="button" aria-expanded="false" aria-controls="shareBox">Share</button>
     </div>
   <div id="mineBody">
-    <div class="vtog" id="vtog" hidden role="group" aria-label="How to show my list"><button type="button" data-v="aisle" aria-pressed="true">By aisle</button><button type="button" data-v="az" aria-pressed="false">A to Z</button></div>
     <div id="mine"></div>
 <div id="shareBox" class="paste sharebox" hidden>
 <p><b>Share your list by aisle.</b></p>
@@ -390,8 +395,7 @@ h2.aisle.rm .ah{color:var(--muted)}
 <div class="shared" id="shared" hidden><input id="shareUrl" readonly aria-label="Link to this list" hidden><button class="link quiet" id="shareStop" type="button">Stop sharing</button></div>
 </div>
     <div class="dfoot">
-      <span class="count" id="countWrap"><span id="count"></span></span>
-      <button class="btn primary" id="mineShare" type="button" aria-expanded="false" aria-controls="shareBox">Share or copy list</button>
+      <span class="count" id="countWrap"><span id="count"></span> · <button class="link quiet" id="clear" type="button" hidden>Clear list</button></span>
     </div>
   </div>
 </section>
@@ -449,7 +453,7 @@ h2.aisle.rm .ah{color:var(--muted)}
   </div>
 </section>
 
-  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v149</span></p>
+  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v150</span></p>
 </div>
 </div>
 
@@ -944,7 +948,7 @@ var RULES = [
   })();
   (function(){
     var sb = $("mineShare"), sx = $("shareBox");
-    sb.addEventListener("click", function(){ var open = sx.hidden; sx.hidden = !open; sb.setAttribute("aria-expanded", String(open)); sb.textContent = open ? "Hide sharing" : "Share or copy list"; if(open) setTimeout(function(){ sx.scrollIntoView({block:"start", behavior:"smooth"}); }, 30); });
+    sb.addEventListener("click", function(){ var open = sx.hidden; sx.hidden = !open; sb.setAttribute("aria-expanded", String(open)); sb.textContent = open ? "Close" : "Share"; if(open) setTimeout(function(){ sx.scrollIntoView({block:"start", behavior:"smooth"}); }, 30); });
     var fb = $("fbBtn"), fx = $("feedback");
     fb.addEventListener("click", function(){ var open = fx.hidden; fx.hidden = !open; fb.setAttribute("aria-expanded", String(open)); });
     var lb = $("listBtn"), lx = $("listBox");
