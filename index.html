@@ -1,4 +1,4 @@
-<!-- ListbyAisle v152 -->
+<!-- ListbyAisle v153 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -358,6 +358,19 @@ h2.aisle.rm .ah{color:var(--muted)}
 .famrec{margin:16px 0 4px;padding:14px 14px 12px;border:1.5px dashed var(--green);border-radius:12px;background:var(--card)}.famrec b{display:block;font-size:1.02rem;color:var(--green-deep)}.famrec p{margin:4px 0 10px;font-size:.9rem;color:var(--muted)}.famrec input,.famrec textarea{display:block;width:100%;box-sizing:border-box;font:inherit;font-size:.92rem;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);margin:0 0 8px}.famrec textarea{resize:vertical;min-height:110px}.famrec .row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.famrec .row small{font-size:.8rem;color:var(--faint)}
 .tripnote .link{font-size:.85rem}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* Sign in (optional) */
+#acct{position:fixed;inset:0;background:rgba(20,25,30,.45);z-index:60;overflow-y:auto;padding:40px 16px}
+#acct[hidden]{display:none}
+.acbox{max-width:420px;margin:0 auto;background:#fff;border-radius:14px;padding:20px;position:relative;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.acbox h2{margin:0 30px 8px 0;font-size:1.3rem;color:var(--green-deep)}
+.acbox p{margin:0 0 10px;line-height:1.45}
+.acbox label{display:block;font-weight:700;margin:12px 0 6px}
+.acbox input{width:100%;font:inherit;padding:11px 12px;border:1.5px solid #ddd;border-radius:10px;box-sizing:border-box}
+.acbox .btn.primary{display:block;width:100%;margin-top:12px}
+.acbox .link{margin-top:8px}
+.acsmall{font-size:.85rem;color:#6b716c}
+.acx{position:absolute;right:10px;top:8px;border:0;background:none;font-size:1.6rem;line-height:1;color:#888;cursor:pointer}
+.acctb.on{background:var(--green);color:#fff}
 </style>
 </head>
 <body>
@@ -367,6 +380,7 @@ h2.aisle.rm .ah{color:var(--muted)}
   <h1 class="tagline">A quick list, sorted by aisle.</h1>
   <a class="howtop" id="howTop" href="#howBox">How it works</a>
   <button class="btn keepb" id="keepBtn" type="button">Bookmark this page</button>
+  <button class="btn keepb acctb" id="acctBtn" type="button">Sign in</button>
 </header>
 <div class="keep" id="keep" hidden></div>
 
@@ -460,15 +474,29 @@ h2.aisle.rm .ah{color:var(--muted)}
   <p class="fbq">What would make this better?</p>
   <textarea id="fbtext" placeholder="Write anything – a missing item, a wrong aisle, something you'd like…"></textarea>
   <div class="row">
-    <small id="fbnote">No account, no tracking.</small>
+    <small id="fbnote">No account needed, no tracking.</small>
     <button class="btn primary" id="fbsend" type="button">Send</button>
   </div>
 </section>
 
-  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v152</span></p>
+  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v153</span></p>
 </div>
 </div>
 
+<div id="acct" hidden role="dialog" aria-modal="true" aria-labelledby="acTitle"><div class="acbox"><button class="acx" id="acX" type="button" aria-label="Close">×</button>
+  <h2 id="acTitle">Keep your list safe</h2>
+  <div id="acOut">
+    <p>Sign in with your email and your list is saved to your account – open it on any phone or laptop. No password: we email you a 6-digit code.</p>
+    <div id="acStep1"><label for="acEmail">Your email</label><input id="acEmail" type="email" autocomplete="email" inputmode="email" maxlength="200"><button class="btn primary" id="acSend" type="button">Email me a code</button></div>
+    <div id="acStep2" hidden><p>We've sent a code to <b id="acTo"></b>. It can take a minute – check your junk folder too.</p><label for="acCode">The code from the email</label><input id="acCode" inputmode="numeric" autocomplete="one-time-code" maxlength="10"><button class="btn primary" id="acGo" type="button">Sign in</button><button class="link" id="acBack" type="button">Use a different email</button></div>
+    <p class="acsmall">Optional. We only use your email to sign you in. One sign-in works on all the Handy Little Tools sites.</p>
+  </div>
+  <div id="acIn" hidden>
+    <p>Signed in as <b id="acWho"></b>. Your list is saved to your account – sign in on any phone or laptop to open it.</p>
+    <p class="acsmall" id="acState"></p>
+    <button class="btn" id="acOutBtn" type="button">Sign out</button>
+  </div>
+</div></div>
 <script>
 var CAT = {
   veg:["Baby potatoes", "Red cabbage", "Jalapeños", "Shallots", "Lemongrass", "Galangal", "Thai basil", "Lime leaves", "Mange tout", "Baby corn", "Beansprouts", "Turnips", "Dill", "Chives", "King oyster mushrooms", "Shiitake mushrooms", "Apples", "Aubergine", "Avocados", "Bananas", "Basil", "Beetroot", "Berries", "Blackberries", "Blueberries", "Broccoli", "Butternut squash", "Cabbage", "Carrots", "Cauliflower", "Celery", "Cherries", "Cherry tomatoes", "Chillies", "Clementines", "Coriander", "Corn on the cob", "Courgettes", "Cucumber", "Curry leaves", "Fennel", "Fresh herbs", "Garlic", "Ginger", "Grapes", "Green beans", "Green chillies", "Kale", "Kiwis", "Leeks", "Lemons", "Lettuce", "Limes", "Mango", "Melon", "Mint", "Mushrooms", "Onions", "Oranges", "Pak choi", "Parsley", "Parsnips", "Pears", "Peas", "Peppers", "Pineapple", "Pomegranate", "Potatoes", "Raspberries", "Red onions", "Rocket", "Salad leaves", "Spinach", "Spring onions", "Strawberries", "Sweet potatoes", "Sweetcorn", "Tomatoes", "Okra", "Radishes", "Watercress", "Asparagus", "Brussels sprouts", "Padron peppers", "Edamame", "Passion fruit", "Kumquats", "Fresh turmeric", "Sugar snap peas", "Broccoli sprouts", "Molokhia"],
@@ -554,7 +582,7 @@ var RULES = [
     if(byNorm[n + "s"]) return byNorm[n + "s"]; return null; }
   function classify(n){ var q = norm(n); for(var i = 0; i < RULES.length; i++){ if(RULES[i][0].test(q)) return RULES[i][1]; } return "other"; }
 
-  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} if(typeof syncPush === "function") syncPush(); }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} if(typeof syncPush === "function") syncPush(); if(typeof acctPush === "function") acctPush(); }
   function load(){ try{ var r = localStorage.getItem(KEY); if(r){ var v = JSON.parse(r); if(v && typeof v === "object"){ S.picked = v.picked || {}; S.got = v.got || {}; S.own = v.own || []; S.org = v.org || {}; S.removed = v.removed || []; S.qty = v.qty || {}; S.note = v.note || {}; S.mv = v.mv || {}; } } }catch(e){} applyMv(); }
   function applyMv(){ var m = S.mv || {}; items.forEach(function(it){ it.a = (m[it.n] && AISLES.some(function(a){ return a[0] === m[it.n] && !GROUPS[a[0]]; })) ? m[it.n] : it.a0; }); 
     S.own.forEach(function(o){ if(!AISLES.some(function(a){ return a[0] === o.a; })) o.a = classify(o.n); }); }
@@ -1054,6 +1082,53 @@ var RULES = [
       .catch(function(){ toast("Couldn't send just now – try again in a minute"); })
       .then(function(){ $("fbsend").disabled = false; });
   });
+
+  // ---------- Sign in (optional): your list is saved to your account and opens on any device ----------
+  // One sign-in for all the Handy Little Tools sites (same Supabase project). Sharing links keep working as before.
+  var SITE = "listbyaisle", ATKEY = SITE + "-acct-t", asb = null, AUSER = null, apushT = null, acEmailV = "", aApplying = false;
+  function acctLib(cb){ if(asb) return cb();
+    var go = function(){ try{ asb = supabase.createClient(SB_URL, SB_KEY, {auth:{persistSession:true, autoRefreshToken:true, storageKey:"hlt-auth", detectSessionInUrl:false}});
+      asb.auth.onAuthStateChange(function(ev, sess){ AUSER = sess ? sess.user : null; acctUI(); }); cb(); }catch(e){ toast("Can't reach the server just now – try again in a minute"); } };
+    if(window.supabase) go(); else { var sc = document.createElement("script"); sc.src = "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"; sc.onload = go; sc.onerror = function(){ toast("Can't reach the server just now – try again in a minute"); }; document.head.appendChild(sc); } }
+  function localT(){ try{ return +localStorage.getItem(ATKEY) || 0; }catch(e){ return 0; } }
+  function setLocalT(t){ try{ localStorage.setItem(ATKEY, String(t)); }catch(e){} }
+  function acctState(t){ var el = $("acState"); if(el) el.textContent = t; }
+  function acctPush(){ if(aApplying) return; setLocalT(Date.now()); if(!AUSER || !asb) return; clearTimeout(apushT); apushT = setTimeout(function(){
+    var raw; try{ raw = JSON.parse(localStorage.getItem(KEY) || "{}"); }catch(e){ raw = {}; }
+    acctState("Saving…"); asb.rpc("hlt_save", {p_site:SITE, p_data:{s:raw, t:localT()}}).then(function(res){ acctState(res.error ? "Saved on this phone – it'll save to your account when you're connected" : "✓ Saved to your account"); }); }, 1500); }
+  function acctPull(first){ if(!AUSER || !asb) return;
+    asb.rpc("hlt_get", {p_site:SITE}).then(function(res){ if(res.error) return acctState("Saved on this phone – it'll save to your account when you're connected");
+      var d = res.data, lt = localT();
+      if(d && d.s && (first || (d.t || 0) > lt)){ // just signed in: the list saved in your account wins
+        aApplying = true; try{ localStorage.setItem(KEY, JSON.stringify(d.s)); }catch(e){} setLocalT(d.t || Date.now()); load(); render(); aApplying = false; acctState("✓ Saved to your account"); }
+      else if(!d || lt > (d.t || 0)){ acctPush(); }
+      else acctState("✓ Saved to your account"); }); }
+  function acctUI(){ var b = $("acctBtn"); b.textContent = AUSER ? "✓ Signed in" : "Sign in"; b.classList.toggle("on", !!AUSER);
+    $("acOut").hidden = !!AUSER; $("acIn").hidden = !AUSER; if(AUSER) $("acWho").textContent = AUSER.email || ""; }
+  function acctOpen(){ $("acct").hidden = false; $("acStep1").hidden = false; $("acStep2").hidden = true; acctUI(); if(!AUSER) setTimeout(function(){ $("acEmail").focus(); }, 50); }
+  function acctClose(){ $("acct").hidden = true; }
+  $("acctBtn").addEventListener("click", acctOpen);
+  $("acX").addEventListener("click", acctClose);
+  $("acct").addEventListener("click", function(e){ if(e.target === this) acctClose(); });
+  $("acBack").addEventListener("click", function(){ $("acStep1").hidden = false; $("acStep2").hidden = true; });
+  function acSend(){ var em = $("acEmail").value.trim().toLowerCase(); if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){ toast("Type your email address"); return; }
+    $("acSend").disabled = true; acctLib(function(){ asb.auth.signInWithOtp({email:em, options:{shouldCreateUser:true}}).then(function(res){ $("acSend").disabled = false;
+      if(res.error){ toast(/rate|seconds/i.test(res.error.message) ? "Please wait a minute before asking for another code" : "Couldn't send the code – check the email and try again"); return; }
+      acEmailV = em; $("acTo").textContent = em; $("acStep1").hidden = true; $("acStep2").hidden = false; $("acCode").value = ""; $("acCode").focus(); }, function(){ $("acSend").disabled = false; toast("Can't reach the server just now – try again in a minute"); }); }); }
+  function acGo(){ var code = $("acCode").value.replace(/\D/g, ""); if(code.length < 6){ toast("Type the code from the email"); return; }
+    $("acGo").disabled = true; asb.auth.verifyOtp({email:acEmailV, token:code, type:"email"}).then(function(res){ $("acGo").disabled = false;
+      if(res.error){ toast("That code didn't work – check it, or send a new one"); return; }
+      AUSER = res.data.user; acctUI(); acctClose(); toast("Signed in – your list is saved to your account"); acctPull(true); }, function(){ $("acGo").disabled = false; toast("Can't reach the server just now – try again in a minute"); }); }
+  $("acSend").addEventListener("click", acSend); $("acGo").addEventListener("click", acGo);
+  $("acEmail").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); acSend(); } });
+  $("acCode").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); acGo(); } });
+  $("acOutBtn").addEventListener("click", function(){ if(!asb) return; asb.auth.signOut().then(function(){ AUSER = null; acctUI(); acctClose(); toast("Signed out – your list stays on this phone"); }); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !$("acct").hidden) acctClose(); });
+  document.addEventListener("visibilitychange", function(){ if(!document.hidden && AUSER) acctPull(); });
+  // Already signed in on this device? Load the sign-in library and bring the list up to date.
+  (function(){ var has = false; try{ has = !!localStorage.getItem("hlt-auth"); }catch(e){}
+    if(has) acctLib(function(){ asb.auth.getSession().then(function(r){ AUSER = r.data && r.data.session ? r.data.session.user : null; acctUI(); acctPull(); }); }); })();
+
 })();
 </script>
 </body>
