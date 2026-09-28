@@ -379,10 +379,8 @@ h2.aisle.rm .ah{color:var(--muted)}
   <a class="brand" href="/">List<span>by</span>Aisle</a>
   <h1 class="tagline">A quick list, sorted by aisle.</h1>
   <a class="howtop" id="howTop" href="#howBox">How it works</a>
-  <button class="btn keepb" id="keepBtn" type="button">Bookmark this page</button>
   <button class="btn keepb acctb" id="acctBtn" type="button">Sign in</button>
 </header>
-<div class="keep" id="keep" hidden></div>
 
 <div class="sticky">
   <h2 class="ltitle stitle">Search</h2>
@@ -479,7 +477,7 @@ h2.aisle.rm .ah{color:var(--muted)}
   </div>
 </section>
 
-  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v153</span></p>
+  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v154</span></p>
 </div>
 </div>
 
@@ -941,23 +939,6 @@ var RULES = [
   $("recipes").addEventListener("click", function(e){ var b = e.target.closest(".addrec"); if(b) openPick("rec", b.dataset.rec); });
   $("recSuggest").addEventListener("click", function(){ var fx = $("feedback"); fx.hidden = false; $("fbBtn").setAttribute("aria-expanded", "true"); if(!$("fbtext").value) $("fbtext").value = "A recipe or cook you should add: "; fx.scrollIntoView({block:"start", behavior:"smooth"}); setTimeout(function(){ $("fbtext").focus(); }, 300); });
   drawRecipes();
-  // Save this page: Android Chrome can show its own install prompt; everyone else gets the steps for their device
-  (function(){
-    var deferred = null, box = $("keep");
-    window.addEventListener("beforeinstallprompt", function(e){ e.preventDefault(); deferred = e; });
-    function steps(){
-      var ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua), android = /Android/.test(ua), mac = /Mac/.test(ua);
-      if(ios) return "On iPhone: tap the <b>Share</b> button (the square with an arrow) at the bottom of Safari, then <b>Add to Home Screen</b>. ListbyAisle gets its own icon, like an app.";
-      if(android) return "Tap the <b>⋮ menu</b> at the top right of the browser, then <b>Add to Home screen</b> (or <b>Install app</b>). ListbyAisle gets its own icon, like an app.";
-      return "Press <b>" + (mac ? "Cmd + D" : "Ctrl + D") + "</b> to bookmark this page. On your phone, open listbyaisle.com and use <b>Add to Home Screen</b> for an app icon.";
-    }
-    $("keepBtn").addEventListener("click", function(){
-      if(deferred){ deferred.prompt(); deferred.userChoice.then(function(){ deferred = null; }); return; }
-      if(!box.hidden){ box.hidden = true; return; }
-      box.innerHTML = steps() + ' <button class="link quiet" id="keepClose" type="button">Close</button>'; box.hidden = false;
-      $("keepClose").addEventListener("click", function(){ box.hidden = true; });
-    });
-  })();
   // How it works: collapsed by default; captions follow the demo video's clock, so Pause freezes both
   (function(){
     var btn = $("howBtn"), box = $("howBox"), vid = $("demoVid"), pp = $("demoPP"), big = $("demoBig"), steps = document.querySelectorAll("#steps .step");
