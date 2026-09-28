@@ -1,4 +1,4 @@
-<!-- ListbyAisle v148 -->
+<!-- ListbyAisle v149 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -98,6 +98,7 @@ body.searching .jumps{display:none}
 #listSec .sharebox p{color:var(--ink)}
 #shopBox{padding:6px 12px 12px;background:#fff;border:1.5px solid var(--green);border-radius:10px}
 #shopBox[hidden]{display:none}
+body.searching #shopBox[hidden]{display:block}
 .mineb{background:var(--purple);border-color:var(--purple);color:#fff}
 .mineb:hover{background:var(--purple-deep);border-color:var(--purple-deep)}
 .mineb .tn{background:#fff;color:var(--purple-deep);border-radius:99px;padding:1px 7px;font-size:.8rem;margin-left:2px}
@@ -417,8 +418,8 @@ h2.aisle.rm .ah{color:var(--muted)}
   <p class="tripnote">Know a great recipe or a cook we should add? <button class="link" id="recSuggest" type="button">Tell us</button></p>
 </div>
 
-<h2 class="sec secrow"><button class="sect shop" id="shopBtn" type="button" aria-expanded="true" aria-controls="shopBox"><span class="c"></span>Browse</button></h2>
-<div id="shopBox">
+<h2 class="sec secrow"><button class="sect shop" id="shopBtn" type="button" aria-expanded="false" aria-controls="shopBox"><span class="c"></span>Browse</button></h2>
+<div id="shopBox" hidden>
   <div class="vtog green" id="btog" role="group" aria-label="How to browse"><button type="button" data-v="aisle" aria-pressed="true">By aisle</button><button type="button" data-v="az" aria-pressed="false">A to Z</button></div>
   <div id="out"></div>
 </div>
@@ -448,7 +449,7 @@ h2.aisle.rm .ah{color:var(--muted)}
   </div>
 </section>
 
-  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v148</span></p>
+  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v149</span></p>
 </div>
 </div>
 
