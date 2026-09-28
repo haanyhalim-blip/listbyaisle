@@ -1,4 +1,4 @@
-<!-- ListbyAisle v150 -->
+<!-- ListbyAisle v151 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -121,6 +121,14 @@ body.searching #shopBox[hidden]{display:block}
 #mineShare{background:var(--purple);border-color:var(--purple)}
 .lhead .vtog{margin:0;font-size:.8rem}
 .lhead .vtog button{padding:5px 10px}
+.rmlink{font-size:.8rem;color:var(--muted);font-weight:400;text-decoration:underline;text-underline-offset:3px;padding:4px 0}
+.rmlink[hidden]{display:none}
+.rmlink[aria-expanded="true"]{color:var(--ink)}
+#listSec:has(#mineBody[hidden]) .lhead .rmlink{display:none}
+.rmpanel{background:#f3f2ee;border-radius:10px;padding:8px 10px;margin:12px 0 4px}
+.rmhead{display:flex;align-items:baseline;gap:8px;font-size:.85rem;color:var(--muted)}
+.rmhead b{color:var(--ink)}
+.rmhead #rmForget{margin-left:auto;font-size:.8rem;color:var(--accent);font-weight:700}
 .lhead .hshare{padding:6px 14px;font-size:.88rem;min-height:0;line-height:1.2}
 #listSec:has(#mineBody[hidden]) .lhead .vtog,#listSec:has(#mineBody[hidden]) .lhead .hshare{display:none}
 #mineShare:hover{background:var(--purple-deep);border-color:var(--purple-deep)}
@@ -379,6 +387,7 @@ h2.aisle.rm .ah{color:var(--muted)}
       <h2 class="ltitle"><button class="sect mine" id="mineBtn" type="button" aria-expanded="true" aria-controls="mineBody"><span class="c"></span>My list</button></h2>
       <div class="vtog" id="vtog" hidden role="group" aria-label="How to show my list"><button type="button" data-v="aisle" aria-pressed="true">By aisle</button><button type="button" data-v="az" aria-pressed="false">A to Z</button></div>
       <button class="btn primary hshare" id="mineShare" type="button" aria-expanded="false" aria-controls="shareBox">Share</button>
+      <button class="link quiet rmlink" id="rmBtn" type="button" hidden aria-expanded="false">Removed <span id="rmN"></span></button>
     </div>
   <div id="mineBody">
     <div id="mine"></div>
@@ -453,7 +462,7 @@ h2.aisle.rm .ah{color:var(--muted)}
   </div>
 </section>
 
-  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v150</span></p>
+  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v151</span></p>
 </div>
 </div>
 
@@ -636,13 +645,13 @@ var RULES = [
         html += '<button class="it'+(got?" got":"")+'" data-n="'+esc(it.n)+'" aria-pressed="'+on+'"><span class="box"></span><span><span class="nm">'+esc(it.n)+'</span>'+(on ? '<span class="leaf'+(S.org[it.n] ? '' : ' off')+'" role="button" title="Organic on/off" aria-label="Organic">O</span>' : '')+'</span></button>'; });
       html += '</div>';
     });
-    if(mine && S.removed.length){
-      var ropen = OPEN._removed === 1;
-      html += '<h2 class="aisle rm"><button class="ah" data-a="_removed" aria-expanded="'+ropen+'"><span class="c"></span>Removed <span class="sub">('+S.removed.length+')</span></button><button class="link quiet" id="rmForget" type="button">Clear</button></h2><div class="grid"'+(ropen ? '' : ' hidden')+'>';
-      S.removed.forEach(function(r, i){ html += '<button class="it rm" data-rm="'+i+'"><span class="box"></span><span><span class="nm">'+esc(r.n)+'</span>'+(r.org ? '<span class="leaf">organic</span>' : '')+'</span></button>'; });
-      html += '</div>';
-      shown += S.removed.length;
+    var rmHtml = "";
+    if(mine && S.removed.length && OPEN._removed === 1){ // opened from "Removed (n)" in the My list heading
+      rmHtml = '<div class="rmpanel"><div class="rmhead"><b>Removed</b><span class="sub">tap one to put it back</span><button class="link quiet" id="rmForget" type="button">Clear</button></div><div class="grid">';
+      S.removed.forEach(function(r, i){ rmHtml += '<button class="it rm" data-rm="'+i+'"><span class="box"></span><span><span class="nm">'+esc(r.n)+'</span>'+(r.org ? '<span class="leaf">organic</span>' : '')+'</span></button>'; });
+      rmHtml += '</div></div>';
     }
+    if(mine) return rmHtml + (shown ? html : '<div class="empty"><b>Nothing on your list yet</b>Search at the top, start from a ready-made list, or browse by aisle.</div>');
     if(shown) return html;
     return mine ? '<div class="empty"><b>Nothing on your list yet</b>Search at the top, start from a ready-made list, or browse by aisle.</div>'
                 : (splitRaw(query).length > 1
@@ -658,6 +667,8 @@ var RULES = [
     $("count").innerHTML = p ? '<b>'+p+'</b> on the list · <b>'+nGot()+'</b> in the trolley' : ''; $("countWrap").hidden = !p;
     ["copy","wa","mail"].forEach(function(id){ $(id).disabled = !p; });
     $("clear").hidden = !p;
+    if(!S.removed.length) OPEN._removed = 0;
+    $("rmBtn").hidden = !S.removed.length; $("rmN").textContent = "(" + S.removed.length + ")"; $("rmBtn").setAttribute("aria-expanded", String(OPEN._removed === 1));
     $("vtog").hidden = !p; $("vtog").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.v === VIEW)); });
     $("paper").textContent = p ? asText() : "Nothing on the list yet";
   }
@@ -673,7 +684,7 @@ var RULES = [
     else { r = {n:b.dataset.n, org:!!S.org[b.dataset.n]}; delete S.picked[r.n]; delete S.got[r.n]; delete S.org[r.n]; }
     if(S.qty) delete S.qty[r.n]; if(S.note) delete S.note[r.n];
     park(r); save(); render();
-    toast(r.n + " taken off – it's in Removed at the bottom", function(){ unpark(r.n); if(r.own){ if(!S.own.some(function(o){ return norm(o.n) === norm(r.n); })) S.own.push({n:r.n, a:r.own.a, got:false, org:!!r.org}); } else { S.picked[r.n] = 1; delete S.got[r.n]; if(r.org) S.org[r.n] = 1; } save(); render(); }); }
+    toast(r.n + " taken off – find it under Removed at the top of your list", function(){ unpark(r.n); if(r.own){ if(!S.own.some(function(o){ return norm(o.n) === norm(r.n); })) S.own.push({n:r.n, a:r.own.a, got:false, org:!!r.org}); } else { S.picked[r.n] = 1; delete S.got[r.n]; if(r.org) S.org[r.n] = 1; } save(); render(); }); }
 
   $("vtog").addEventListener("click", function(e){ var b = e.target.closest("button[data-v]"); if(!b) return; VIEW = b.dataset.v; try{ localStorage.setItem(VKEY, VIEW); }catch(x){} render(); });
   $("btog").addEventListener("click", function(e){ var b = e.target.closest("button[data-v]"); if(!b) return; BVIEW = b.dataset.v; try{ localStorage.setItem(BKEY, BVIEW); }catch(x){} $("btog").querySelectorAll("button").forEach(function(x){ x.setAttribute("aria-pressed", String(x.dataset.v === BVIEW)); }); render(); });
@@ -831,6 +842,7 @@ var RULES = [
   $("q").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); if(splitRaw(this.value).length > 1) addTyped(this.value); else this.blur(); } });
   function clearAll(){ if(!nPicked()) return; if(!confirm("Clear the whole list?")) return; Object.keys(S.picked).forEach(function(n){ park({n:n, org:!!S.org[n]}); }); S.own.forEach(function(o){ park({n:o.n, org:!!o.org, own:{a:o.a}}); }); S = {picked:{}, got:{}, own:[], org:{}, removed:S.removed}; save(); render(); }
   $("clear").addEventListener("click", clearAll);
+  $("rmBtn").addEventListener("click", function(){ OPEN._removed = OPEN._removed === 1 ? 0 : 1; render(); });
   $("copy").addEventListener("click", function(){
     var t = asText(); if(!t) return;
     if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ toast("Copied"); }, function(){ toast("Could not copy"); }); }
