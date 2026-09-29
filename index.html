@@ -524,6 +524,7 @@ body.lpopen{overflow:hidden}
 @media print{body.lpopen>*:not(#lp){display:none!important}#lp{position:static;overflow:visible}.lpbar,.lpacts,#lp .prow{display:none!important}}
 /* Faint shopping list drawing at the top (in the margin on wide screens) */
 header{position:relative}header>*{position:relative;z-index:1}header::after{content:"";position:absolute;pointer-events:none;z-index:0;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20190%22%20fill%3D%22none%22%20stroke%3D%22%232f5d3a%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Cpath%20d%3D%22M52%2022h86l6%206v148l-6-5-7%205-7-5-7%205-7-5-7%205-7-5-7%205-7-5-7%205-7-5-7%205-7-5-6%205V28z%22%2F%3E%0A%3Cpath%20d%3D%22M68%2022v-8M88%2022v-8M108%2022v-8M128%2022v-8%22%2F%3E%0A%3Crect%20x%3D%2262%22%20y%3D%2244%22%20width%3D%2214%22%20height%3D%2214%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M65%2051l4%204%207-9%22%2F%3E%3Cpath%20d%3D%22M86%2051h40%22%2F%3E%0A%3Crect%20x%3D%2262%22%20y%3D%2274%22%20width%3D%2214%22%20height%3D%2214%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M65%2081l4%204%207-9%22%2F%3E%3Cpath%20d%3D%22M86%2081h32%22%2F%3E%0A%3Crect%20x%3D%2262%22%20y%3D%22104%22%20width%3D%2214%22%20height%3D%2214%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M86%20111h44%22%2F%3E%0A%3Crect%20x%3D%2262%22%20y%3D%22134%22%20width%3D%2214%22%20height%3D%2214%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M86%20141h26%22%2F%3E%0A%3Cpath%20d%3D%22M160%20104c8-6%2022-4%2028%204l-34%2066c-3%205-8%204-8-2z%22%2F%3E%3Cpath%20d%3D%22M162%20122l9%204M156%20140l8%204M152%20156l6%203%22%2F%3E%0A%3Cpath%20d%3D%22M174%20100c-4-10-2-20%204-26M178%20101c2-11%208-18%2016-20M171%20102c-8-6-12-14-11-22%22%2F%3E%0A%3C%2Fsvg%3E") no-repeat center/contain}header::after{right:-6px;top:4px;width:120px;height:114px;opacity:.16}@media (min-width:600px) and (max-width:1079px){header::after{display:none}}@media (min-width:1080px){header::after{right:-150px;top:8px;width:120px;height:114px;opacity:.16;transform:none}}
+#mineShare .cap:empty{display:none}
 </style>
 </head>
 <body>
@@ -553,7 +554,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
     <div class="lhead">
       <div class="ltwrap"><h2 class="ltitle"><button class="sect mine" id="mineBtn" type="button" aria-expanded="true" aria-controls="mineBody"><span class="c"></span>My list</button></h2><span class="htally" id="htally"></span></div>
       <div class="vtog" id="vtog" hidden role="group" aria-label="How to show my list"><button type="button" data-v="aisle" aria-pressed="true">Aisle</button><button type="button" data-v="az" aria-pressed="false">A–Z</button></div>
-      <button class="hic hshare" id="mineShare" type="button" aria-expanded="false" aria-controls="shareBox" title="Share this list"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></svg><span class="cap">Share</span></button>
+      <button class="hic hshare" id="mineShare" type="button" aria-expanded="false" aria-controls="shareBox" title="Share this list"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></svg><span class="cap"></span></button>
       <button class="hic" id="mylSaveLink" type="button" hidden title="Save to My Lists"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span class="cap">Save</span></button>
       <button class="hic clearic" id="clear" type="button" hidden title="Clear the whole list"><svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true"><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.7"/><line x1="3.7" y1="3.7" x2="12.3" y2="12.3" stroke="currentColor" stroke-width="1.7"/></svg><span class="cap">Clear</span></button>
     </div>
@@ -612,7 +613,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v179</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v180</span></p>
 </div>
 </div>
 
@@ -1112,7 +1113,7 @@ var RULES = [
   drawRecipes();
   (function(){
     var sb = $("mineShare"), sx = $("shareBox");
-    sb.addEventListener("click", function(){ var open = sx.hidden; sx.hidden = !open; sb.setAttribute("aria-expanded", String(open)); sb.querySelector(".cap").textContent = open ? "Close" : "Share"; if(open) setTimeout(function(){ sx.scrollIntoView({block:"start", behavior:"smooth"}); }, 30); });
+    sb.addEventListener("click", function(){ var open = sx.hidden; sx.hidden = !open; sb.setAttribute("aria-expanded", String(open)); sb.querySelector(".cap").textContent = open ? "Close" : ""; if(open) setTimeout(function(){ sx.scrollIntoView({block:"start", behavior:"smooth"}); }, 30); });
     var fb = $("fbBtn"), fx = $("feedback");
     fb.addEventListener("click", function(){ var open = fx.hidden; fx.hidden = !open; fb.setAttribute("aria-expanded", String(open)); });
     var TABS = [["listBtn","listBox"],["recBtn","recBox"],["shopBtn","shopBox"]];
