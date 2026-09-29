@@ -121,7 +121,11 @@ body.searching #shopBox[hidden]{display:block}
 #mineShare{background:var(--purple);border-color:var(--purple)}
 .lhead .vtog{margin:0;font-size:.8rem}
 .lhead .vtog button{padding:5px 10px}
-.lhead .clearlink{font-size:.8rem;color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:4px 0;margin-left:auto}
+.lhead .clearlink{font-size:.8rem;color:var(--accent);font-weight:700;text-decoration:underline;text-underline-offset:3px;padding:4px 0}
+.lhead .hshare{margin-left:auto}
+.htally{font-size:.82rem;color:var(--muted);white-space:nowrap}
+.htally b{color:var(--second-deep, var(--ink));font-weight:700}
+.htally:empty{display:none}
 .lhead .clearlink[hidden]{display:none}
 #listSec:has(#mineBody[hidden]) .lhead .clearlink{display:none}
 .rmlink{font-size:.8rem;color:var(--muted);font-weight:400;text-decoration:underline;text-underline-offset:3px;padding:4px 0}
@@ -400,11 +404,12 @@ h2.aisle.rm .ah{color:var(--muted)}
 <section id="listSec">
     <div class="lhead">
       <h2 class="ltitle"><button class="sect mine" id="mineBtn" type="button" aria-expanded="true" aria-controls="mineBody"><span class="c"></span>My list</button></h2>
-      <div class="vtog" id="vtog" hidden role="group" aria-label="How to show my list"><button type="button" data-v="aisle" aria-pressed="true">By aisle</button><button type="button" data-v="az" aria-pressed="false">A to Z</button></div>
+      <span class="htally" id="htally"></span>
       <button class="btn primary hshare" id="mineShare" type="button" aria-expanded="false" aria-controls="shareBox">Share</button>
       <button class="link quiet clearlink" id="clear" type="button" hidden>Clear list</button>
     </div>
   <div id="mineBody">
+    <div class="vtog" id="vtog" hidden role="group" aria-label="How to show my list"><button type="button" data-v="aisle" aria-pressed="true">By aisle</button><button type="button" data-v="az" aria-pressed="false">A to Z</button></div>
     <div id="mine"></div>
 <div id="shareBox" class="paste sharebox" hidden>
 <p><b>Share your list by aisle.</b></p>
@@ -477,7 +482,7 @@ h2.aisle.rm .ah{color:var(--muted)}
   </div>
 </section>
 
-  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v154</span></p>
+  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v155</span></p>
 </div>
 </div>
 
@@ -688,7 +693,7 @@ var RULES = [
     $("mine").innerHTML = draw(true);
     $("out").innerHTML = draw(false);
     var p = nPicked();
-    $("count").innerHTML = p ? '<b>'+p+'</b> on the list · <b>'+nGot()+'</b> in the trolley' : ''; $("countWrap").hidden = !p;
+    $("count").innerHTML = p ? '<b>'+p+'</b> on the list · <b>'+nGot()+'</b> in the trolley' : ''; $("htally").innerHTML = p ? '<b>'+nGot()+'</b> of <b>'+p+'</b> ✓' : ''; $("countWrap").hidden = !p;
     ["copy","wa","mail"].forEach(function(id){ $(id).disabled = !p; });
     $("clear").hidden = !p;
     $("vtog").hidden = !p; $("vtog").querySelectorAll("button").forEach(function(b){ b.setAttribute("aria-pressed", String(b.dataset.v === VIEW)); });
