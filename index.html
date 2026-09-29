@@ -587,7 +587,7 @@ body.lpopen{overflow:hidden}
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v167</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v168</span></p>
 </div>
 </div>
 
@@ -1237,7 +1237,7 @@ var RULES = [
   $("myrec").addEventListener("click", function(e){ var b = e.target.closest("button"); if(!b) return;
     if(b.dataset.mr === "new"){ MRFORM = "new"; drawMyRec(); $("mrName").focus(); return; }
     if(b.dataset.mr === "cancel"){ MRFORM = null; drawMyRec(); return; }
-    if(b.dataset.mr === "rename"){ var v = prompt("A name for your recipe box – e.g. The Halim kitchen", MYR.name || ""); if(v != null){ MYR.name = v.replace(/\s+/g, " ").trim().slice(0, 40); myrSave(); } return; }
+    if(b.dataset.mr === "rename"){ var v = prompt("A name for your recipe box – e.g. Our family kitchen", MYR.name || ""); if(v != null){ MYR.name = v.replace(/\s+/g, " ").trim().slice(0, 40); myrSave(); } return; }
     if(b.dataset.mr === "del"){ var i = MYR.recipes.findIndex(function(x){ return x.id === MRFORM; }); if(i < 0) return; var gone = MYR.recipes.splice(i, 1)[0]; MRFORM = null; myrSave(); toast("“" + gone.name + "” deleted", function(){ MYR.recipes.splice(i, 0, gone); myrSave(); }); return; }
     if(b.dataset.mredit){ MRFORM = b.dataset.mredit; drawMyRec(); var f = $("mrForm"); if(f) f.scrollIntoView({behavior:"smooth", block:"center"}); return; }
     if(b.dataset.mruse){ if(!lpOpen("my", b.dataset.mruse, true)) openPick("my", b.dataset.mruse); return; }
