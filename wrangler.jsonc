@@ -1,10 +1,12 @@
 // Cloudflare Worker settings for this site.
 // The whole site is index.html (plus manifest.webmanifest), served as static files.
+// Any other address (e.g. /lists/weekly-basics or /recipes/daal) gets index.html, which opens that list or recipe full-screen.
 // Deploy command in Cloudflare: npx wrangler deploy   (no build command)
 {
   "name": "listbyaisle",
   "compatibility_date": "2025-09-01",
   "assets": {
-    "directory": "./"
+    "directory": "./",
+    "not_found_handling": "single-page-application"
   }
 }

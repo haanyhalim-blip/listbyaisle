@@ -22,7 +22,7 @@
 <meta name="twitter:image" content="https://listbyaisle.com/og-image.png">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"List by Aisle","url":"https://listbyaisle.com/","applicationCategory":"LifestyleApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"GBP"},"description":"A quick shopping list sorted by aisle, so you get round the shop in one pass. Type, tap or paste your list, then copy it, send it to WhatsApp or email it, or pick a recipe from our own kitchen or by Jamie Oliver, Gordon Ramsay, Joshua Weissman, Maangchi, Binging with Babish, Nick DiGiovanni or Dr Vegan and get the ingredients sorted by aisle. Free, no account needed."}</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f5d3a'/%3E%3Cpath d='M16 20h32M16 32h32M16 44h20' stroke='%23fff' stroke-width='6' stroke-linecap='round'/%3E%3C/svg%3E">
-<link rel="manifest" href="manifest.webmanifest">
+<link rel="manifest" href="/manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="ListbyAisle">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -460,6 +460,29 @@ body.hasmic #qClear{right:40px}
 #mine .mrow.editing .mctl{flex:1 1 100%;flex-wrap:wrap;justify-content:flex-end;row-gap:6px;padding-bottom:6px}
 #mine .mrow.editing .mctl .qc{display:block;order:9;flex:1 1 100%;height:32px;font-size:.92rem;margin:0}
 #mine .mrow .it .cnote,#mine .cnote{display:block;font-size:.8rem;color:var(--muted);font-weight:400;margin-top:1px}
+
+/* A ready-made list or recipe, opened full-screen like a page of its own */
+#lp{position:fixed;inset:0;z-index:70;background:var(--bg,#f4f5f0);overflow-y:auto;-webkit-overflow-scrolling:touch}
+#lp[hidden]{display:none}
+body.lpopen{overflow:hidden}
+.lpbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--green-wash);border-bottom:1.5px solid var(--green)}
+.lpback{font:inherit;font-weight:700;font-size:1rem;color:var(--green-deep);background:#fff;border:1.5px solid var(--green);border-radius:999px;padding:7px 14px;cursor:pointer}
+.lpbrand{margin-left:auto;font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.15rem;color:var(--green)}
+.lpbrand span{color:var(--ink)}
+.lpwrap{max-width:760px;margin:0 auto;padding:16px 16px 120px}
+.lpkind{margin:4px 0 2px;font-size:.78rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--green)}
+#lp h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.8rem;line-height:1.15;margin:0 0 6px;color:var(--green-deep)}
+.lpmeta{margin:0 0 12px;color:var(--muted);font-size:.95rem}
+.lpacts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+.lpacts .btn{font-size:.9rem;padding:7px 14px}
+#lp .pick{border:0;padding:0;background:none;margin:0}
+#lp .phead{display:none}
+#lp .prow{position:sticky;bottom:0;z-index:2;background:var(--bg,#f4f5f0);padding:12px 0 14px;margin-top:10px;border-top:1px solid var(--line)}
+#lpSteps h2{font-size:1.1rem;color:var(--green-deep);margin:22px 0 8px}
+#lpSteps ol{margin:0;padding-left:22px}
+#lpSteps li{margin:0 0 8px;line-height:1.45}
+#lpSteps li.h{list-style:none;margin-left:-22px;font-weight:700;color:var(--green-deep)}
+@media print{body.lpopen>*:not(#lp){display:none!important}#lp{position:static;overflow:visible}.lpbar,.lpacts,#lp .prow{display:none!important}}
 </style>
 </head>
 <body>
@@ -561,7 +584,7 @@ body.hasmic #qClear{right:40px}
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v166</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v167</span></p>
 </div>
 </div>
 
@@ -579,6 +602,17 @@ body.hasmic #qClear{right:40px}
     <button class="btn" id="acOutBtn" type="button">Sign out</button>
   </div>
 </div></div>
+<div id="lp" hidden role="dialog" aria-modal="true" aria-labelledby="lpTitle">
+  <div class="lpbar"><button class="lpback" id="lpBack" type="button">← Back</button><span class="lpbrand">List<span>by</span>Aisle</span></div>
+  <div class="lpwrap">
+    <p class="lpkind" id="lpKind"></p>
+    <h1 id="lpTitle"></h1>
+    <p class="lpmeta" id="lpMeta"></p>
+    <div class="lpacts"><button class="btn" id="lpShare" type="button">Share</button><button class="btn" id="lpPrint" type="button">Print</button><a class="btn" id="lpLink" target="_blank" rel="noopener" hidden>See it on the chef’s site</a></div>
+    <div class="pick" id="lpBody"></div>
+    <div id="lpSteps"></div>
+  </div>
+</div>
 <script>
 var CAT = {
   veg:["Baby potatoes", "Red cabbage", "Jalapeños", "Shallots", "Lemongrass", "Galangal", "Thai basil", "Lime leaves", "Mange tout", "Baby corn", "Beansprouts", "Turnips", "Dill", "Chives", "King oyster mushrooms", "Shiitake mushrooms", "Apples", "Aubergine", "Avocados", "Bananas", "Basil", "Beetroot", "Berries", "Blackberries", "Blueberries", "Broccoli", "Butternut squash", "Cabbage", "Carrots", "Cauliflower", "Celery", "Cherries", "Cherry tomatoes", "Chillies", "Clementines", "Coriander", "Corn on the cob", "Courgettes", "Cucumber", "Curry leaves", "Fennel", "Fresh herbs", "Garlic", "Ginger", "Grapes", "Green beans", "Green chillies", "Kale", "Kiwis", "Leeks", "Lemons", "Lettuce", "Limes", "Mango", "Melon", "Mint", "Mushrooms", "Onions", "Oranges", "Pak choi", "Parsley", "Parsnips", "Pears", "Peas", "Peppers", "Pineapple", "Pomegranate", "Potatoes", "Raspberries", "Red onions", "Rocket", "Salad leaves", "Spinach", "Spring onions", "Strawberries", "Sweet potatoes", "Sweetcorn", "Tomatoes", "Okra", "Radishes", "Watercress", "Asparagus", "Brussels sprouts", "Padron peppers", "Edamame", "Passion fruit", "Kumquats", "Fresh turmeric", "Sugar snap peas", "Broccoli sprouts", "Molokhia"],
@@ -983,7 +1017,7 @@ var RULES = [
     Object.keys(by).forEach(function(k){ if(!AISLES.some(function(a){ return a[0] === k; })) out.push({label:"Other", rows:by[k]}); });
     return out; }
   function openPick(kind, id){ var d = pickRows(kind, id); if(!d) return; closePick(); PICK = {kind:kind, id:id, d:d, off:{}}; drawPick(); document.querySelectorAll(".trip.on").forEach(function(x){ x.classList.remove("on"); }); var card = document.querySelector('.trip[data-list="'+id+'"]') || document.querySelector('.trip:has(.addrec[data-rec="'+id+'"])'); if(card) card.classList.add("on"); d.box.scrollIntoView({block:"start", behavior:"smooth"}); }
-  function closePick(){ if(!PICK) return; document.querySelectorAll(".trip.on").forEach(function(x){ x.classList.remove("on"); }); PICK.d.box.hidden = true; PICK.d.box.innerHTML = ""; PICK = null; }
+  function closePick(){ if(!PICK) return; if(PICK.d.box === $("lpBody")){ var wasLp = true; } document.querySelectorAll(".trip.on").forEach(function(x){ x.classList.remove("on"); }); PICK.d.box.hidden = true; PICK.d.box.innerHTML = ""; PICK = null;  if(wasLp) setTimeout(function(){ if(!$("lp").hidden) lpClose(); }, 0); }
   function drawPick(){ var d = PICK.d, on = d.rows.filter(function(r){ return !PICK.off[r.n]; }).length;
     d.box.innerHTML = '<div class="phead"><button class="pclose" type="button" data-pickclose="1" aria-label="Close">×</button><span class="pk">Choose what to add from</span><b>'+esc(d.name)+'</b><small>Everything is ticked – untick what you don’t need, then press Add.</small></div><div class="grid">'
       + pickGroups(d.rows).map(function(g){ return '<div class="pgrp">'+esc(g.label)+'</div>' + g.rows.map(function(r){ var k = !PICK.off[r.n]; return '<button class="it" type="button" data-pick="'+esc(r.n)+'" aria-pressed="'+k+'"><span class="box"></span><span><span class="nm">'+esc(r.n)+'</span>'+(r.q ? '<span class="qty">'+esc(r.q)+'</span>' : '')+'</span></button>'; }).join(""); }).join("")
@@ -1001,7 +1035,7 @@ var RULES = [
       var nm = d.name; closePick(); save(); render(); openMine();
       toast(n2 ? nm + ": " + n2 + " items added" : "All of those are on your list already"); } }
   $("listPick").addEventListener("click", onPickClick); $("recPick").addEventListener("click", onPickClick);
-  $("lists").addEventListener("click", function(e){ var b = e.target.closest(".trip"); if(b) openPick("list", b.dataset.list); });
+  $("lists").addEventListener("click", function(e){ var b = e.target.closest(".trip"); if(b && !lpOpen("list", b.dataset.list, true)) openPick("list", b.dataset.list); });
   $("listSuggest").addEventListener("click", function(){ var fx = $("feedback"); fx.hidden = false; $("fbBtn").setAttribute("aria-expanded", "true"); if(!$("fbtext").value) $("fbtext").value = "For the ready-made list \"…\" I'd add: "; fx.scrollIntoView({block:"start", behavior:"smooth"}); setTimeout(function(){ $("fbtext").focus(); }, 300); });
   drawLists();
   var RTYPES = ["Mains","Sides","Breakfast","Snacks & treats","Dips & sauces","Drinks"];
@@ -1032,7 +1066,7 @@ var RULES = [
     save(); render(); openMine();
     toast(n ? r.name + ": " + n + " items added, with amounts. Tap anything you don't need." : "All of those are on your list already");
   }
-  $("recipes").addEventListener("click", function(e){ var b = e.target.closest(".addrec"); if(b) openPick("rec", b.dataset.rec); });
+  $("recipes").addEventListener("click", function(e){ var b = e.target.closest(".addrec[data-rec]"); if(b && !lpOpen("rec", b.dataset.rec, true)) openPick("rec", b.dataset.rec); });
   $("recSuggest").addEventListener("click", function(){ var fx = $("feedback"); fx.hidden = false; $("fbBtn").setAttribute("aria-expanded", "true"); if(!$("fbtext").value) $("fbtext").value = "A recipe or cook you should add: "; fx.scrollIntoView({block:"start", behavior:"smooth"}); setTimeout(function(){ $("fbtext").focus(); }, 300); });
   drawRecipes();
   // How it works: collapsed by default; captions follow the demo video's clock, so Pause freezes both
@@ -1202,7 +1236,7 @@ var RULES = [
     if(b.dataset.mr === "rename"){ var v = prompt("A name for your recipe box – e.g. The Halim kitchen", MYR.name || ""); if(v != null){ MYR.name = v.replace(/\s+/g, " ").trim().slice(0, 40); myrSave(); } return; }
     if(b.dataset.mr === "del"){ var i = MYR.recipes.findIndex(function(x){ return x.id === MRFORM; }); if(i < 0) return; var gone = MYR.recipes.splice(i, 1)[0]; MRFORM = null; myrSave(); toast("“" + gone.name + "” deleted", function(){ MYR.recipes.splice(i, 0, gone); myrSave(); }); return; }
     if(b.dataset.mredit){ MRFORM = b.dataset.mredit; drawMyRec(); var f = $("mrForm"); if(f) f.scrollIntoView({behavior:"smooth", block:"center"}); return; }
-    if(b.dataset.mruse){ openPick("my", b.dataset.mruse); return; }
+    if(b.dataset.mruse){ if(!lpOpen("my", b.dataset.mruse, true)) openPick("my", b.dataset.mruse); return; }
     if(b.dataset.mrsend){ var r = MYR.recipes.filter(function(x){ return x.id === b.dataset.mrsend; })[0]; if(!r) return;
       var txt = r.name.toUpperCase() + "\n" + ingrText(r.items) + (r.notes ? "\n\n" + r.notes : "") + "\n\nFrom " + (MYR.name || "my recipes") + " on ListbyAisle – https://listbyaisle.com";
       if(navigator.share) navigator.share({text: txt}).catch(function(){}); else window.open("https://wa.me/?text=" + encodeURIComponent(txt), "_blank"); } });
@@ -1214,13 +1248,54 @@ var RULES = [
     MRFORM = null; myrSave(); toast("Saved: " + nm); });
   $("myPick").addEventListener("click", onPickClick);
   $("recQ").addEventListener("input", recSearch);
-  $("recipes").addEventListener("click", function(e){ var b = e.target.closest("[data-mruse]"); if(b) openPick("my", b.dataset.mruse); });
+  $("recipes").addEventListener("click", function(e){ var b = e.target.closest("[data-mruse]"); if(b && !lpOpen("my", b.dataset.mruse, true)) openPick("my", b.dataset.mruse); });
   myrLoad(); drawMyRec();
 
 
   // Speech bubble: open a comment box under that one item; it closes again when you're done
   $("mine").addEventListener("click", function(e){ var c = e.target.closest(".cmt"); if(!c) return; var row = c.closest(".mrow"); row.classList.add("editing"); var i = row.querySelector(".qc"); if(i){ i.focus(); var v = i.value; i.value = ""; i.value = v; } });
   $("mine").addEventListener("focusout", function(e){ if(!e.target.classList || !e.target.classList.contains("qc")) return; setTimeout(function(){ render(); }, 120); });
+
+
+  // ---------- Full-screen pages for ready-made lists and recipes (listbyaisle.com/lists/… and /recipes/…) ----------
+  function lpSlug(t){ return String(t).toLowerCase().replace(/[’']/g, "").replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
+  function lpFind(kind, id){ if(kind === "list") return LISTS.filter(function(x){ return x.id === id; })[0];
+    if(kind === "my") return (MYR && MYR.recipes || []).filter(function(x){ return x.id === id; })[0];
+    var r = null; RECIPES.forEach(function(c){ c.recipes.forEach(function(x){ if(x.id === id) r = {r:x, c:c}; }); }); return r; }
+  function lpPath(kind, id){ var f = lpFind(kind, id); if(!f) return null; if(kind === "list") return "/lists/" + lpSlug(f.name); if(kind === "rec") return "/recipes/" + lpSlug(f.r.name); return null; }
+  function lpFromPath(path){ var m = String(path).match(/^\/(lists|recipes)\/([a-z0-9-]+)\/?$/); if(!m) return null; var hit = null;
+    if(m[1] === "lists") LISTS.forEach(function(t){ if(lpSlug(t.name) === m[2]) hit = ["list", t.id]; });
+    else RECIPES.forEach(function(c){ c.recipes.forEach(function(r){ if(!hit && lpSlug(r.name) === m[2]) hit = ["rec", r.id]; }); });
+    return hit; }
+  var LPTITLE = document.title, LPURL = null;
+  function lpOpen(kind, id, push){ var d = pickRows(kind, id), f = lpFind(kind, id); if(!d || !f) return false; closePick();
+    d.box = $("lpBody"); PICK = {kind:kind, id:id, d:d, off:{}}; drawPick();
+    var meta = "", steps = "", link = "";
+    if(kind === "list"){ $("lpKind").textContent = "Ready-made list"; meta = f.blurb || ""; }
+    else if(kind === "my"){ $("lpKind").textContent = (MYR && MYR.name) || "My recipes"; meta = f.notes ? "" : ""; if(f.notes) steps = '<h2>Method and notes</h2><p style="white-space:pre-line">' + esc(f.notes) + '</p>'; }
+    else { var r = f.r, c = f.c; $("lpKind").textContent = "Recipe · " + c.chef + (r.type ? " · " + r.type : "");
+      meta = (r.by ? r.by : "") + (r.serves ? (r.by ? " · " : "") + (r.url ? "Serves " : (r.by ? "serves " : "Makes ")) + r.serves : "");
+      if(r.steps) steps = '<h2>Method</h2><ol>' + (function(){ var k = 0; return r.steps.map(function(st){ return st.h ? '<li class="h">' + esc(st.h) + '</li>' : '<li value="' + (++k) + '">' + esc(st.t) + '</li>'; }).join(""); })() + '</ol>';
+      if(r.note) steps += '<p>' + esc(r.note) + '</p>'; link = r.url || ""; }
+    var nm = kind === "rec" ? f.r.name : f.name;
+    $("lpTitle").textContent = nm; $("lpMeta").textContent = meta; $("lpMeta").hidden = !meta; $("lpSteps").innerHTML = steps;
+    $("lpLink").hidden = !link; if(link) $("lpLink").href = link;
+    LPURL = lpPath(kind, id); $("lpShare").hidden = !LPURL;
+    document.title = nm + (kind === "list" ? " – shopping list" : " – ingredients") + " | ListbyAisle";
+    $("lp").hidden = false; document.body.classList.add("lpopen"); $("lp").scrollTop = 0;
+    if(push) history.pushState({lp:[kind, id]}, "", LPURL || location.pathname + location.search);
+    return true; }
+  function lpHide(){ if($("lp").hidden) return; $("lp").hidden = true; document.body.classList.remove("lpopen"); document.title = LPTITLE; }
+  function lpClose(){ if(history.state && history.state.lp) history.back(); else { lpHide(); if(PICK && PICK.d.box === $("lpBody")) closePick(); if(/^\/(lists|recipes)\//.test(location.pathname)) history.replaceState(null, "", "/"); } }
+  window.addEventListener("popstate", function(e){ var st = e.state && e.state.lp; if(st){ lpOpen(st[0], st[1], false); } else { if(PICK && PICK.d.box === $("lpBody")) closePick(); lpHide(); } });
+  $("lpBack").addEventListener("click", lpClose);
+  $("lpBody").addEventListener("click", onPickClick);
+  $("lpPrint").addEventListener("click", function(){ window.print(); });
+  $("lpShare").addEventListener("click", function(){ var u = location.origin + (LPURL || "/"), t = $("lpTitle").textContent;
+    if(navigator.share) navigator.share({title: t, url: u}).catch(function(){}); else if(navigator.clipboard) navigator.clipboard.writeText(u).then(function(){ toast("Link copied"); }, function(){ prompt("Copy this link:", u); }); else prompt("Copy this link:", u); });
+  document.addEventListener("keydown", function(e){ if(e.key === "Escape" && !$("lp").hidden) lpClose(); });
+  // Opened straight from a link like listbyaisle.com/lists/weekly-basics
+  (function(){ var hit = lpFromPath(location.pathname); if(hit){ history.replaceState(null, "", "/"); history.pushState({lp:hit}, "", location.origin + lpPath(hit[0], hit[1])); lpOpen(hit[0], hit[1], false); } })();
 
   // ---------- My lists: save a list to use again (on this phone; signed in, it's also kept in your account) ----------
   var MKEY = "listbyaisle-mylists", MYL = [], MOPEN = "", MFORM = false;
