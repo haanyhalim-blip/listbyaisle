@@ -1,0 +1,166 @@
+#!/usr/bin/env python3
+"""Builds my-list.html: the tick-off page for a list someone saved themselves (the list travels in the link).
+
+Run from the repo root after changing it:   python3 tools/build-my-list.py
+"""
+import html, json, os, re, datetime
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SITE = "https://listbyaisle.com"
+src = open(os.path.join(ROOT, "index.html"), encoding="utf-8").read()
+
+def js(var):
+    return json.loads(re.search(r"var " + var + r" = (.*?);\n", src, re.S).group(1))
+
+VER = re.search(r'<span class="ver">(v\d+)</span>', src).group(1)
+e = lambda s: html.escape(str(s), quote=True)
+
+CSS = """
+:root{color-scheme:light;--bg:#eef2f0;--card:#fff;--line:#ddd7c9;--ink:#1f2a22;--muted:#66705f;--main:#2f5d3a;--main-deep:#22452b;--wash:#e3ecdf;--gold:#e6be55;--gold-deep:#c9971f;--gold-ink:#5c430a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.5}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 60px}
+header{padding:22px 0 12px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.45rem;color:var(--main);text-decoration:none}
+.brand span{color:var(--ink)}
+header .home{margin-left:auto;font-size:.9rem;color:var(--main-deep)}
+.crumbs{font-size:.85rem;color:var(--muted);margin:14px 0 6px}
+.crumbs a{color:var(--main-deep)}
+h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.9rem;line-height:1.15;margin:4px 0 8px;color:var(--main-deep)}
+.lead{margin:0 0 14px;color:var(--muted)}
+.by{display:flex;align-items:center;gap:12px;margin:0 0 16px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--gold);background:linear-gradient(90deg,#fff6dc,#fffdf6)}
+.av{flex:none;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold-deep));color:#fff;font-size:1.45rem;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 2px #fff,0 0 0 3.5px var(--gold)}
+.by small{display:block;font-size:.7rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#a67c14}
+.by b{font-size:1.05rem;color:var(--gold-ink)}
+.go{display:block;text-align:center;background:var(--main);color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem;padding:14px 16px;border-radius:12px;margin:0 0 8px}
+.go:hover{background:var(--main-deep)}
+.acts{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;font-size:.9rem;margin:0 0 20px}
+.acts a,.acts button{color:var(--main-deep);background:none;border:0;padding:0;font:inherit;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 16px 12px;margin:0 0 14px}
+h2{font-size:.8rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--main);margin:14px 0 6px}
+h2 small{letter-spacing:0;text-transform:none;font-weight:400;color:var(--muted)}
+ul.items{list-style:none;margin:0;padding:0}
+ul.items li{display:flex;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line)}
+ul.items li:first-child{border-top:0}
+ul.items li::before{content:"";flex:none;width:18px;height:18px;border:2px solid var(--main);border-radius:5px}
+ul.items li.opt{color:var(--muted)}
+ul.items li.opt::before{border-style:dashed;border-color:var(--muted)}
+ul.items li.opt em{font-style:normal;font-size:.8rem;margin-left:auto}
+.lists{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin:8px 0 18px}
+.lists a{display:block;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:12px 13px;text-decoration:none;color:var(--ink)}
+.lists a.gold{border-color:var(--gold);background:linear-gradient(180deg,#fffaf0,#fff 70%)}
+.lists a b{display:block;color:var(--main-deep)}
+.lists a small{display:block;font-size:.84rem;color:var(--muted);line-height:1.35;margin-top:3px}
+.lists a span{display:block;font-size:.78rem;color:var(--main);font-weight:700;margin-top:5px}
+footer{border-top:1px solid var(--line);margin-top:26px;padding-top:14px;font-size:.85rem;color:var(--muted)}
+footer a{color:var(--main-deep)}
+/* the list page doubles as a tick-off checklist (hand the phone to a child and let them tick) */
+.acts2{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.acts2 a,.acts2 button{font:inherit;font-size:.9rem;font-weight:700;color:var(--main-deep);background:var(--card);border:1.5px solid var(--line);border-radius:999px;padding:7px 14px;text-decoration:none;cursor:pointer}
+.acts2 .add{background:var(--main);border-color:var(--main);color:#fff}
+.prog{position:sticky;top:0;z-index:3;background:var(--bg);padding:10px 0 10px;margin:0 0 4px}
+.pbar{height:12px;border-radius:99px;background:var(--wash);overflow:hidden}
+.prog.all .pbar i{background:linear-gradient(90deg,#e6be55,#c9971f)}
+.pbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3f9a6b,#2f7d55);border-radius:99px;transition:width .3s}
+.pt{display:flex;justify-content:space-between;align-items:baseline;margin-top:5px;font-weight:700;color:var(--main-deep)}
+.pt button{font:inherit;font-size:.85rem;font-weight:400;color:var(--muted);background:none;border:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0}
+ul.items.chk li{padding:0}
+ul.items.chk li::before{display:none}
+.tk{font:inherit;font-size:1.08rem;color:var(--ink);background:none;border:0;width:100%;text-align:left;display:flex;align-items:center;gap:14px;padding:12px 2px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tk::before{content:"";flex:none;width:28px;height:28px;border:2.5px solid var(--main);border-radius:8px;background:#fff center/18px no-repeat}
+.tk[aria-pressed="true"]{color:var(--muted);text-decoration:line-through;text-decoration-thickness:2px}
+.tk[aria-pressed="true"]::before{background-color:#2f7d55;border-color:#2f7d55;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.2 3L13 4.5' fill='none' stroke='%23fff' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+.extras{margin:10px 0 0;border-top:1px solid var(--line);padding-top:6px}
+.extras summary{cursor:pointer;font-weight:700;color:var(--main-deep);padding:8px 0}
+.extras .tk{font-size:1rem;padding:9px 2px}
+.extras .tk::before{width:24px;height:24px;border-style:dashed}
+.done{margin:0 0 14px;padding:16px;border-radius:12px;background:#e3f3e9;border:1.5px solid #3f9a6b;text-align:center;font-weight:700;font-size:1.15rem;color:#1f5e3d}
+.done small{display:block;font-weight:400;font-size:.88rem;color:var(--muted);margin-top:2px}
+@media print{header .home,.go,.acts,.acts2,.prog,.done,footer,.crumbs{display:none}body{background:#fff}.card{border:0;padding:0}.tk[aria-pressed="true"]{color:var(--ink);text-decoration:none}.tk[aria-pressed="true"]::before{background:#fff;border-color:var(--main)}}
+"""
+
+def page(path, title, desc, body, crumbs):
+    url = SITE + "/" + path
+    cr = " › ".join('<a href="%s">%s</a>' % (e(h), e(t)) if h else e(t) for t, h in crumbs)
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{e(title)}</title>
+<meta name="description" content="{e(desc)}">
+<meta name="theme-color" content="#2f5d3a">
+<link rel="canonical" href="{e(url)}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="List by Aisle">
+<meta property="og:title" content="{e(title)}">
+<meta property="og:description" content="{e(desc)}">
+<meta property="og:url" content="{e(url)}">
+<meta property="og:image" content="{SITE}/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f5d3a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>{CSS}</style>
+</head>
+<body>
+<div class="wrap">
+<header><a class="brand" href="/">List<span>by</span>Aisle</a><a class="home" href="/">← ListbyAisle home</a></header>
+<p class="crumbs">{cr}</p>
+{body}
+<footer>
+<p><a href="/"><b>ListbyAisle</b></a> – a shopping list sorted by aisle. Free, no account needed. <a href="/">Start your own list</a></p>
+<p>From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). {VER}</p>
+</footer>
+</div>
+<script>
+document.addEventListener("click", function(ev){{ var sh = ev.target.closest("[data-share]"); if(sh){{ var su = sh.getAttribute("data-share"), st = document.title;
+    if(navigator.share) navigator.share({{title: st, url: su}}).catch(function(){{}}); else if(navigator.clipboard) navigator.clipboard.writeText(su).then(function(){{ sh.textContent = "Link copied ✓"; setTimeout(function(){{ sh.textContent = "Share"; }}, 2200); }}, function(){{ prompt("Copy this link:", su); }}); else prompt("Copy this link:", su); return; }}
+  var b = ev.target.closest("[data-copy]"); if(!b) return; var u = b.getAttribute("data-copy");
+  function done(){{ b.textContent = "Link copied ✓"; setTimeout(function(){{ b.textContent = "Copy link"; }}, 2200); }}
+  if(navigator.clipboard) navigator.clipboard.writeText(u).then(done, function(){{ prompt("Copy this link:", u); }}); else prompt("Copy this link:", u); }});
+// Tick-off checklist: ticks stay on this phone until "Start again".
+(function(){{ var P = document.getElementById("prog"); if(!P) return; var slug = P.getAttribute("data-slug"), daily = P.getAttribute("data-daily") === "1", K = "listbyaisle-ticks";
+  var d = new Date(), today = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+  function all(){{ try{{ return JSON.parse(localStorage.getItem(K) || "{{}}") || {{}}; }}catch(e){{ return {{}}; }} }}
+  var me = all()[slug] || {{}}, T = (daily && me.d !== today) ? {{}} : (me.t || {{}});
+  function store(){{ var A = all(); if(Object.keys(T).length) A[slug] = {{d: today, t: T}}; else delete A[slug]; try{{ localStorage.setItem(K, JSON.stringify(A)); }}catch(e){{}} }}
+  function draw(){{ var n = 0, k = 0, any = false; document.querySelectorAll(".tk").forEach(function(b){{ var on = !!T[b.getAttribute("data-n")]; b.setAttribute("aria-pressed", String(on)); if(on) any = true; if(!b.closest(".extras")){{ n++; if(on) k++; }} }});
+    P.querySelector("i").style.width = (n ? Math.round(100 * k / n) : 0) + "%"; P.querySelector(".pn").textContent = n && k === n ? "All done! ⭐" : k + " of " + n + " done"; P.classList.toggle("all", !!n && k === n);
+    P.querySelector("[data-again]").hidden = !any; document.getElementById("done").hidden = !(n && k === n); }}
+  document.addEventListener("click", function(ev){{ var b = ev.target.closest(".tk"); if(b){{ var nm = b.getAttribute("data-n"); if(T[nm]) delete T[nm]; else T[nm] = 1; store(); draw(); return; }}
+    if(ev.target.closest("[data-again]")){{ T = {{}}; store(); draw(); window.scrollTo({{top: 0, behavior: "smooth"}}); }} }});
+  draw(); }})();
+</script>
+</body>
+</html>
+"""
+
+
+# ---------- my-list.html: a tick-off page for a list someone saved themselves (the list travels in the link: /my-list#…) ----------
+def build_my_list(site_name, word, daily):
+    body = """<h1 id="mlT">Your list</h1><p class="lead" id="mlL">Tick things off as you go – the ticks stay on this phone.</p>
+<p class="acts2"><button type="button" id="mlShare" data-share="">Share</button><button type="button" onclick="print()">Print</button></p>
+<div class="prog" id="prog" data-slug="my" data-daily="DAILY"><div class="pbar"><i></i></div><div class="pt"><span class="pn">0 WORD</span><button type="button" data-again="1" hidden>Start again</button></div></div>
+<div class="card" id="mlBody"></div>
+<div class="done" id="done" hidden>DONE<small>DONESUB</small></div>
+<p class="lead" style="font-size:.88rem">This is a list someone saved on SITE. Only people with this link can see it.</p>
+<script>
+(function(){ var d = null; try{ d = JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(1).replace(/-/g, "+").replace(/_/g, "/"))))); }catch(e){}
+  function $(i){ return document.getElementById(i); } function x(s){ var t = document.createElement("i"); t.textContent = s; return t.innerHTML.replace(/"/g, "&quot;"); }
+  if(!d || !d.g){ $("mlT").textContent = "This link looks incomplete"; $("mlL").textContent = "Ask the person who sent it to share it again."; $("mlBody").hidden = true; $("prog").hidden = true; $("mlShare").parentNode.hidden = true; return; }
+  $("mlT").textContent = d.n; document.title = d.n + " – checklist | SITE";
+  $("prog").setAttribute("data-slug", "my-" + (d.i || d.n)); $("mlShare").setAttribute("data-share", location.href);
+  $("mlBody").innerHTML = d.g.map(function(g){ return "<h2>" + x(g[0]) + (g[1] ? " <small>– " + x(g[1]) + "</small>" : "") + "</h2><ul class=\\"items chk\\">"
+    + g[2].map(function(r){ return "<li><button class=\\"tk\\" type=\\"button\\" data-n=\\"" + x(r[0] + (r[1] ? " – " + r[1] : "")) + "\\" aria-pressed=\\"false\\"><span>" + x(r[0]) + (r[1] ? "<small class=\\"tn\\">" + x(r[1]) + "</small>" : "") + "</span></button></li>"; }).join("") + "</ul>"; }).join(""); })();
+</script>"""
+    done = "All " + word + "! ⭐"
+    body = (body.replace("DAILY", "1" if daily else "0").replace("DONESUB", "Well done. It starts fresh again tomorrow." if daily else "Well done. Press Start again to use it next time.")
+            .replace("DONE", done).replace("WORD", word).replace("SITE", site_name))
+    h = page("my-list", "Your list | " + site_name, "A list saved on " + site_name + ", to tick off on your phone.", body, [(site_name, "/"), ("Your list", None)])
+    h = h.replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"', 1)
+    h = h.replace("</style>", ".tk .tn{display:block;font-size:.85rem;color:var(--muted);text-decoration:none;font-weight:400}\n</style>", 1)
+    open(os.path.join(ROOT, "my-list.html"), "w", encoding="utf-8").write(h)
+build_my_list("ListbyAisle", "done", False)
+print("Built my-list.html")
