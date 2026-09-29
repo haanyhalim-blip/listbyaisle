@@ -90,12 +90,15 @@ body.searching .jumps{display:none}
 .sect[aria-expanded="true"] .c{transform:rotate(45deg)}
 .sect:hover{opacity:.85}
 /* One bar for Ready-made lists, Recipes and Browse – only the one you tap is open */
-.sectabs{display:flex;gap:4px;margin:22px 0 10px;padding:5px;background:var(--green-wash);border-left:4px solid var(--green);border-radius:8px}
-.sectabs .sect{flex:1 1 0;min-width:0;width:auto;justify-content:center;gap:5px;font-size:.92rem;padding:8px 4px;border-radius:6px;white-space:nowrap}
-.sectabs .sect:first-child{flex-grow:1.6}
-.sectabs .sect .c{width:7px;height:7px;border-width:0 2px 2px 0}
-.sectabs .sect[aria-expanded="true"]{background:var(--green);color:#fff}
-@media (max-width:400px){.sectabs .sect .c{display:none}}@media (max-width:350px){.sectabs .sect{font-size:.84rem}}
+.sectabs{display:grid;grid-template-columns:1.45fr 1fr 1fr;gap:8px;margin:22px 0 12px}
+.sectabs .sect{width:auto;min-width:0;justify-content:center;gap:7px;font-size:.95rem;padding:11px 8px;border-radius:12px;white-space:nowrap;background:var(--card,#fff);border:1.5px solid var(--green);color:var(--green-deep);box-shadow:0 1px 3px rgba(0,0,0,.06);transition:background .15s,color .15s}
+.sectabs .sect .c{display:none}
+.sectabs .sect .ti{flex:none}
+.sectabs .sect:hover{background:var(--green-wash);opacity:1}
+.sectabs .sect[aria-expanded="true"]{background:var(--green);color:#fff;border-color:var(--green)}
+@media (max-width:520px){.sectabs{gap:6px;grid-template-columns:1.55fr 1fr 1fr}.sectabs .sect{flex-direction:column;gap:3px;font-size:.84rem;padding:9px 4px 8px;line-height:1.15}.sectabs .sect .ti{width:20px;height:20px}}
+@media (max-width:380px){.sectabs .sect{font-size:.8rem;padding-left:2px;padding-right:2px}}
+@media (max-width:340px){.sectabs .sect .tx{display:none}}
 .howwrap{margin:0 0 4px;padding:14px 16px;background:var(--card);border:1.5px solid var(--green);border-radius:10px;display:grid;gap:14px;grid-template-columns:1fr auto;align-items:center}
 .howwrap[hidden]{display:none}
 .gtk{display:block;margin-top:6px;font-size:.82rem;color:var(--muted)}
@@ -468,7 +471,7 @@ body.hasmic #qClear{right:40px}
   </div>
 </section>
 
-<div class="sectabs" role="group" aria-label="Ready-made lists, recipes or browse"><button class="sect" id="listBtn" type="button" aria-expanded="false" aria-controls="listBox"><span class="c"></span>Ready-made lists</button><button class="sect" id="recBtn" type="button" aria-expanded="false" aria-controls="recBox"><span class="c"></span>Recipes</button><button class="sect shop" id="shopBtn" type="button" aria-expanded="false" aria-controls="shopBox"><span class="c"></span>Browse</button></div>
+<div class="sectabs" role="group" aria-label="Ready-made lists, recipes or browse"><button class="sect" id="listBtn" type="button" aria-expanded="false" aria-controls="listBox"><span class="c"></span><svg class="ti" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6M9 12h6M9 16h4"/></svg><span class="tl">Ready-made<span class="tx"> lists</span></span></button><button class="sect" id="recBtn" type="button" aria-expanded="false" aria-controls="recBox"><span class="c"></span><svg class="ti" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16v3a6 6 0 0 1-6 6h-4a6 6 0 0 1-6-6z"/><path d="M2 11h20M9 7c0-1 1-1.5 1-2.5M13 7c0-1 1-1.5 1-2.5"/></svg>Recipes</button><button class="sect shop" id="shopBtn" type="button" aria-expanded="false" aria-controls="shopBox"><span class="c"></span><svg class="ti" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Browse</button></div>
 <div id="listBox" hidden>
   <div id="myl"></div>
   <div class="trips" id="lists"></div>
@@ -520,7 +523,7 @@ body.hasmic #qClear{right:40px}
   </div>
 </section>
 
-  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v158</span></p>
+  <p class="tiny">From <a href="https://listbyaisle.com/">Handy Little Tools</a> – sister sites <a href="https://packbybag.com/">PackbyBag</a> (a packing list by bag) and <a href="https://dobytoday.com/">DobyToday</a> (today's jobs by when). <span class="ver">v159</span></p>
 </div>
 </div>
 
