@@ -603,7 +603,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v171</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v172</span></p>
 </div>
 </div>
 
@@ -728,16 +728,16 @@ var RULES = [
   function chosen(){
     var out = [];
     AISLES.forEach(function(a){
-      if(GROUPS[a[0]]){ var rows=[]; S.own.forEach(function(o){ if(o.a === a[0]) rows.push({n:o.n + (o.org ? " (organic)" : ""), got:!!o.got}); }); if(rows.length) out.push({label:a[1], rows:rows}); return; }
-      var rows = items.filter(function(it){ return it.a === a[0] && S.picked[it.n]; }).map(function(it){ return {n:it.n + (S.org[it.n] ? " (organic)" : ""), got:!!S.got[it.n]}; });
-      S.own.forEach(function(o){ if(o.a === a[0]) rows.push({n:o.n + (o.org ? " (organic)" : ""), got:!!o.got}); });
+      if(GROUPS[a[0]]){ var rows=[]; S.own.forEach(function(o){ if(o.a === a[0]) rows.push({n:o.n + (o.org ? " (organic)" : ""), k:o.n, got:!!o.got}); }); if(rows.length) out.push({label:a[1], rows:rows}); return; }
+      var rows = items.filter(function(it){ return it.a === a[0] && S.picked[it.n]; }).map(function(it){ return {n:it.n + (S.org[it.n] ? " (organic)" : ""), k:it.n, got:!!S.got[it.n]}; });
+      S.own.forEach(function(o){ if(o.a === a[0]) rows.push({n:o.n + (o.org ? " (organic)" : ""), k:o.n, got:!!o.got}); });
       if(rows.length) out.push({label:a[1], rows:rows});
     });
     return out;
   }
   function asText(){
     var lines = [];
-    chosen().forEach(function(g){ lines.push(g.label.toUpperCase()); g.rows.forEach(function(r){ var nt = noteText(r.n); lines.push((r.got ? "☑ " : "☐ ") + r.n + (nt ? " – " + nt : "")); }); lines.push(""); });
+    chosen().forEach(function(g){ lines.push(g.label.toUpperCase()); g.rows.forEach(function(r){ var nt = noteText(r.k || r.n); lines.push((r.got ? "☑ " : "☐ ") + r.n + (nt ? " – " + nt : "")); }); lines.push(""); });
     return lines.join("\n").trim();
   }
 
