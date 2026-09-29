@@ -449,6 +449,17 @@ h2.aisle.rm .ah{color:var(--muted)}
 .qwrap .micb{position:absolute;right:6px;top:50%;transform:translateY(-50%)}
 body.hasmic .sticky #q{padding-right:76px}
 body.hasmic #qClear{right:40px}
+
+/* One row per item: the comment box opens only when you tap the speech bubble */
+#mine .mrow{flex-wrap:nowrap}
+#mine .mctl{flex:none;flex-wrap:nowrap}
+#mine .mctl .qc{display:none}
+#mine .mctl .cmt{flex:none;display:inline-flex;align-items:center;color:#9aa096;cursor:pointer;padding:4px 2px 4px 5px}
+#mine .mctl .cmt.has{color:var(--second, var(--purple))}
+#mine .mrow.editing{flex-wrap:wrap}
+#mine .mrow.editing .mctl{flex:1 1 100%;flex-wrap:wrap;justify-content:flex-end;row-gap:6px;padding-bottom:6px}
+#mine .mrow.editing .mctl .qc{display:block;order:9;flex:1 1 100%;height:32px;font-size:.92rem;margin:0}
+#mine .mrow .it .cnote,#mine .cnote{display:block;font-size:.8rem;color:var(--muted);font-weight:400;margin-top:1px}
 </style>
 </head>
 <body>
@@ -550,7 +561,7 @@ body.hasmic #qClear{right:40px}
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v165</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v166</span></p>
 </div>
 </div>
 
@@ -681,9 +692,9 @@ var RULES = [
   function noteTag(n){ var t = noteText(n); return t ? '<span class="qty">'+esc(t)+'</span>' : ''; }
   function leafTag(org){ return '<span class="leaf'+(org ? '' : ' off')+'" role="button" title="Organic on/off" aria-label="Organic">Org</span>'; }
   var RMV = '<span class="rmv" role="button" title="Take off the list" aria-label="Remove"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.7"/><line x1="3.7" y1="3.7" x2="12.3" y2="12.3" stroke="currentColor" stroke-width="1.7"/></svg></span>';
-  function ctl(n, ref, org, own){ var q = parseInt((S.qty || {})[n], 10) || 1, c = (S.note || {})[n] || ""; return '<div class="mctl" '+ref+'><button type="button" class="qm" aria-label="One fewer"'+(q <= 1 ? ' disabled' : '')+'>&minus;</button><span class="qv" aria-label="Quantity">'+q+'</span><button type="button" class="qp" aria-label="One more">+</button><input class="qc" type="text" maxlength="60" value="'+esc(c)+'" aria-label="Comment">'+leafTag(org)+(own ? '<span class="mv" role="button" title="Change aisle" aria-label="Change aisle"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5h11M10 2.5l3 3-3 3"/><path d="M14 10.5H3M6 7.5l-3 3 3 3"/></svg></span>' : '')+RMV+'</div>'; }
-  function mineBtn(it){ var got = !!S.got[it.n]; return '<div class="mrow'+(got?" got":"")+'"><button class="it'+(got?" got":"")+'" data-n="'+esc(it.n)+'" aria-pressed="'+got+'"><span class="box"></span><span><span class="nm">'+esc(it.n)+'</span>'+(got ? noteTag(it.n) + (S.org[it.n] ? leafTag(true) : '') : '')+'</span></button>'+(got ? '' : ctl(it.n, 'data-n="'+esc(it.n)+'"', !!S.org[it.n], true))+'</div>'; }
-  function mineOwn(p, i){ return '<div class="mrow'+(p.got?" got":"")+'"><button class="it own'+(p.got?" got":"")+'" data-own="'+i+'" aria-pressed="'+!!p.got+'"><span class="box"></span><span><span class="nm">'+esc(p.n)+'</span>'+(p.got ? noteTag(p.n) + (p.org ? leafTag(true) : '') : '')+'</span></button>'+(p.got ? '' : ctl(p.n, 'data-own="'+i+'"', !!p.org, true))+'</div>'; }
+  function ctl(n, ref, org, own){ var q = parseInt((S.qty || {})[n], 10) || 1, c = (S.note || {})[n] || ""; return '<div class="mctl" '+ref+'><button type="button" class="qm" aria-label="One fewer"'+(q <= 1 ? ' disabled' : '')+'>&minus;</button><span class="qv" aria-label="Quantity">'+q+'</span><button type="button" class="qp" aria-label="One more">+</button><span class="cmt'+(c ? ' has' : '')+'" role="button" title="Add a comment" aria-label="Add a comment"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg></span><input class="qc" type="text" maxlength="60" value="'+esc(c)+'" aria-label="Comment" placeholder="Comment, e.g. the big one">'+leafTag(org)+(own ? '<span class="mv" role="button" title="Change aisle" aria-label="Change aisle"><svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5.5h11M10 2.5l3 3-3 3"/><path d="M14 10.5H3M6 7.5l-3 3 3 3"/></svg></span>' : '')+RMV+'</div>'; }
+  function mineBtn(it){ var got = !!S.got[it.n]; return '<div class="mrow'+(got?" got":"")+'"><button class="it'+(got?" got":"")+'" data-n="'+esc(it.n)+'" aria-pressed="'+got+'"><span class="box"></span><span><span class="nm">'+esc(it.n)+'</span>'+(got ? noteTag(it.n) + (S.org[it.n] ? leafTag(true) : '') : ''+((S.note || {})[it.n] ? '<small class="cnote">'+esc((S.note || {})[it.n])+'</small>' : '')+'')+'</span></button>'+(got ? '' : ctl(it.n, 'data-n="'+esc(it.n)+'"', !!S.org[it.n], true))+'</div>'; }
+  function mineOwn(p, i){ return '<div class="mrow'+(p.got?" got":"")+'"><button class="it own'+(p.got?" got":"")+'" data-own="'+i+'" aria-pressed="'+!!p.got+'"><span class="box"></span><span><span class="nm">'+esc(p.n)+'</span>'+(p.got ? noteTag(p.n) + (p.org ? leafTag(true) : '') : ''+((S.note || {})[p.n] ? '<small class="cnote">'+esc((S.note || {})[p.n])+'</small>' : '')+'')+'</span></button>'+(p.got ? '' : ctl(p.n, 'data-own="'+i+'"', !!p.org, true))+'</div>'; }
   function draw(mine){
     var q = mine ? "" : norm(query), html = "", shown = 0, grpShown = false;
     if(q){
@@ -1205,6 +1216,11 @@ var RULES = [
   $("recQ").addEventListener("input", recSearch);
   $("recipes").addEventListener("click", function(e){ var b = e.target.closest("[data-mruse]"); if(b) openPick("my", b.dataset.mruse); });
   myrLoad(); drawMyRec();
+
+
+  // Speech bubble: open a comment box under that one item; it closes again when you're done
+  $("mine").addEventListener("click", function(e){ var c = e.target.closest(".cmt"); if(!c) return; var row = c.closest(".mrow"); row.classList.add("editing"); var i = row.querySelector(".qc"); if(i){ i.focus(); var v = i.value; i.value = ""; i.value = v; } });
+  $("mine").addEventListener("focusout", function(e){ if(!e.target.classList || !e.target.classList.contains("qc")) return; setTimeout(function(){ render(); }, 120); });
 
   // ---------- My lists: save a list to use again (on this phone; signed in, it's also kept in your account) ----------
   var MKEY = "listbyaisle-mylists", MYL = [], MOPEN = "", MFORM = false;
