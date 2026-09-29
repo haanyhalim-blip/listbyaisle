@@ -473,6 +473,9 @@ body.lpopen{overflow:hidden}
 .lpkind{margin:4px 0 2px;font-size:.78rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--green)}
 #lp h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.8rem;line-height:1.15;margin:0 0 6px;color:var(--green-deep)}
 .lpmeta{margin:0 0 12px;color:var(--muted);font-size:.95rem}
+.lpadd{margin:4px 0 14px}
+.lpadd .btn{display:block;width:100%;font-size:1.08rem;padding:14px 16px;border-radius:12px}
+.lpadd small{display:block;margin-top:6px;font-size:.85rem;color:var(--muted);text-align:center}
 .lpacts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
 .lpacts .btn{font-size:.9rem;padding:7px 14px}
 #lp .pick{border:0;padding:0;background:none;margin:0}
@@ -608,6 +611,7 @@ body.lpopen{overflow:hidden}
     <p class="lpkind" id="lpKind"></p>
     <h1 id="lpTitle"></h1>
     <p class="lpmeta" id="lpMeta"></p>
+    <div class="lpadd"><button class="btn primary" id="lpAdd" type="button">Add to my list</button><small>Everything’s ticked – untick anything you already have.</small></div>
     <div class="lpacts"><button class="btn" id="lpShare" type="button">Share</button><button class="btn" id="lpPrint" type="button">Print</button><a class="btn" id="lpLink" target="_blank" rel="noopener" hidden>See it on the chef’s site</a></div>
     <div class="pick" id="lpBody"></div>
     <div id="lpSteps"></div>
@@ -1282,7 +1286,7 @@ var RULES = [
     $("lpLink").hidden = !link; if(link) $("lpLink").href = link;
     LPURL = lpPath(kind, id); $("lpShare").hidden = !LPURL;
     document.title = nm + (kind === "list" ? " – shopping list" : " – ingredients") + " | ListbyAisle";
-    $("lp").hidden = false; document.body.classList.add("lpopen"); $("lp").scrollTop = 0;
+    lpSync(); $("lp").hidden = false; document.body.classList.add("lpopen"); $("lp").scrollTop = 0;
     if(push) history.pushState({lp:[kind, id]}, "", LPURL || location.pathname + location.search);
     return true; }
   function lpHide(){ if($("lp").hidden) return; $("lp").hidden = true; document.body.classList.remove("lpopen"); document.title = LPTITLE; }
@@ -1290,6 +1294,10 @@ var RULES = [
   window.addEventListener("popstate", function(e){ var st = e.state && e.state.lp; if(st){ lpOpen(st[0], st[1], false); } else { if(PICK && PICK.d.box === $("lpBody")) closePick(); lpHide(); } });
   $("lpBack").addEventListener("click", lpClose);
   $("lpBody").addEventListener("click", onPickClick);
+  // The big add button at the top mirrors the one at the bottom (same count, same action)
+  function lpSync(){ var b = $("lpBody").querySelector("[data-pickadd]"); if(b) $("lpAdd").textContent = b.textContent; }
+  $("lpBody").addEventListener("click", function(){ setTimeout(lpSync, 0); });
+  $("lpAdd").addEventListener("click", function(){ var b = $("lpBody").querySelector("[data-pickadd]"); if(b) b.click(); });
   $("lpPrint").addEventListener("click", function(){ window.print(); });
   $("lpShare").addEventListener("click", function(){ var u = location.origin + (LPURL || "/"), t = $("lpTitle").textContent;
     if(navigator.share) navigator.share({title: t, url: u}).catch(function(){}); else if(navigator.clipboard) navigator.clipboard.writeText(u).then(function(){ toast("Link copied"); }, function(){ prompt("Copy this link:", u); }); else prompt("Copy this link:", u); });
