@@ -451,6 +451,7 @@ h2.aisle.rm .ah{color:var(--muted)}
 #myl .mylsave small{display:block;font-weight:400;font-size:.8rem;color:var(--muted);margin-top:2px}
 .trip.mkcard{border:2px dashed var(--accent)}
 .trip.mkcard b,.trip.mkcard .n{color:var(--accent)}
+.chef.mychef h3,.chef.mychef .chefbtn{color:var(--accent)}
 #myl[hidden]{display:none}
 #myl .mylsave{font:inherit;cursor:pointer;border:1.5px dashed var(--second, var(--purple));background:transparent;color:var(--second, var(--purple));border-radius:10px;padding:12px 13px;font-weight:700;text-align:left}
 #myl .mylnote{font-size:.85rem;color:var(--muted);margin:0}
@@ -618,7 +619,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v183</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v184</span></p>
 </div>
 </div>
 
@@ -1260,7 +1261,7 @@ var RULES = [
   // My recipes: a folder like the cooks' ones – closed until you tap it
   var MROPEN = false;
   function drawMyRec(){ var el = $("myrec"); if(!el || !MYR) return; var nm = MYR.name || "My recipes", h = "", n = MYR.recipes.length, open = MROPEN || !!MRFORM;
-    h += '<div class="chef mychef' + (open ? ' open' : '') + '"><h3><button class="chefbtn" type="button" data-mr="fold" aria-expanded="' + open + '"><span class="c"></span>' + esc(nm) + '<span class="ab">' + (n ? 'Your own recipes, ready to add to your list.' : '+ Create your own recipe – your family’s dishes, in a box of your own.') + '</span><span class="cn">' + (n ? n + (n === 1 ? ' recipe' : ' recipes') + ' · tap to open' : 'tap to start') + '</span></button></h3><div class="chefbody"' + (open ? '' : ' hidden') + '>';
+    h += '<div class="chef mychef' + (open ? ' open' : '') + '"><h3><button class="chefbtn" type="button" data-mr="fold" aria-expanded="' + open + '"><span class="c"></span>' + (n ? esc(nm) : '+ Create your own recipe') + '<span class="ab">' + (n ? 'Your own recipes, ready to add to your list.' : 'Your family’s dishes, in a box of your own.') + '</span><span class="cn">' + (n ? n + (n === 1 ? ' recipe' : ' recipes') + ' · tap to open' : 'tap to start') + '</span></button></h3><div class="chefbody"' + (open ? '' : ' hidden') + '>';
     h += '<div class="mrh"><b>' + esc(nm) + '</b><button class="link quiet" type="button" data-mr="rename">' + (MYR.name ? "rename" : "give it a name") + '</button></div>';
     h += '<p>' + (MYR.recipes.length ? 'Your own recipes. Tap one to add what you need to your list.' : 'Your family’s recipes, in a box of your own – just the name and the ingredients. Tap one any time to put what you need on your list, sorted by aisle.') + '</p>';
     h += MRFORM ? '' : '<div class="mra"><button class="btn primary" type="button" data-mr="new">+ Create your own recipe</button></div>';
