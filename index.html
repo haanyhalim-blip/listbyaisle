@@ -525,6 +525,9 @@ body.lpopen{overflow:hidden}
 /* Faint shopping list drawing at the top (in the margin on wide screens) */
 header{position:relative}header>*{position:relative;z-index:1}header::after{content:"";position:absolute;pointer-events:none;z-index:0;background:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20200%20190%22%20fill%3D%22none%22%20stroke%3D%22%232f5d3a%22%20stroke-width%3D%223.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%3Cpath%20d%3D%22M52%2022h86l6%206v148l-6-5-7%205-7-5-7%205-7-5-7%205-7-5-7%205-7-5-7%205-7-5-7%205-7-5-6%205V28z%22%2F%3E%0A%3Cpath%20d%3D%22M68%2022v-8M88%2022v-8M108%2022v-8M128%2022v-8%22%2F%3E%0A%3Crect%20x%3D%2262%22%20y%3D%2244%22%20width%3D%2214%22%20height%3D%2214%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M65%2051l4%204%207-9%22%2F%3E%3Cpath%20d%3D%22M86%2051h40%22%2F%3E%0A%3Crect%20x%3D%2262%22%20y%3D%2274%22%20width%3D%2214%22%20height%3D%2214%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M65%2081l4%204%207-9%22%2F%3E%3Cpath%20d%3D%22M86%2081h32%22%2F%3E%0A%3Crect%20x%3D%2262%22%20y%3D%22104%22%20width%3D%2214%22%20height%3D%2214%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M86%20111h44%22%2F%3E%0A%3Crect%20x%3D%2262%22%20y%3D%22134%22%20width%3D%2214%22%20height%3D%2214%22%20rx%3D%223%22%2F%3E%3Cpath%20d%3D%22M86%20141h26%22%2F%3E%0A%3Cpath%20d%3D%22M160%20104c8-6%2022-4%2028%204l-34%2066c-3%205-8%204-8-2z%22%2F%3E%3Cpath%20d%3D%22M162%20122l9%204M156%20140l8%204M152%20156l6%203%22%2F%3E%0A%3Cpath%20d%3D%22M174%20100c-4-10-2-20%204-26M178%20101c2-11%208-18%2016-20M171%20102c-8-6-12-14-11-22%22%2F%3E%0A%3C%2Fsvg%3E") no-repeat center/contain}header::after{right:-6px;top:4px;width:120px;height:114px;opacity:.16}@media (min-width:600px) and (max-width:1079px){header::after{display:none}}@media (min-width:1080px){header::after{right:-150px;top:8px;width:120px;height:114px;opacity:.16;transform:none}}
 #mineShare .cap:empty{display:none}
+.sendbox{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:10px;font-size:.92rem}
+.sendbox label{position:relative;cursor:pointer}
+.sendbox input[type=date]{position:absolute;inset:0;opacity:0;width:100%;cursor:pointer}
 </style>
 </head>
 <body>
@@ -569,7 +572,9 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   <button class="btn" id="mail">Email</button>
   <button class="btn share" id="share" title="Share a link so someone else can edit this list with you">Share link</button>
   <button class="btn share" id="shareLink" type="button" title="Copy the link to this list">Copy link</button>
+  <button class="btn" id="sendTodo" type="button" title="Put this list on your DobyToday to-do list">✓ Send to my to-do list</button>
 </div>
+<div class="sendbox" id="sendBox" hidden><span>Put it on my to-do list for</span> <button class="btn" type="button" data-sday="0">Today</button> <button class="btn" type="button" data-sday="1">Tomorrow</button> <label class="link">another day<input type="date" id="sendDate"></label></div>
 <div class="shared" id="shared" hidden><input id="shareUrl" readonly aria-label="Link to this list" hidden><button class="link quiet" id="shareStop" type="button">Stop sharing</button></div>
 </div>
     <div class="dfoot">
@@ -613,7 +618,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v182</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v183</span></p>
 </div>
 </div>
 
@@ -1178,6 +1183,20 @@ var RULES = [
     CODE = ""; try{ localStorage.removeItem(CKEY); }catch(e){} history.replaceState(null, "", location.pathname); if(chan){ try{ chan.unsubscribe(); }catch(e){} chan = null; } showShared(); }
   $("share").addEventListener("click", startShare);
   $("shareLink").addEventListener("click", sendLink);
+  // ---------- Send to DobyToday: the list goes on your to-do list as one job, with a link back to tick it off ----------
+  var OUTKEY = "listbyaisle-outbox";
+  function outLoad(){ try{ var o = JSON.parse(localStorage.getItem(OUTKEY) || "[]") || []; var cut = Date.now() - 21 * 864e5; return o.filter(function(x){ return x && x.t > cut; }); }catch(e){ return []; } }
+  function outMerge(list){ var o = outLoad(), ids = {}; o.forEach(function(x){ ids[x.i] = 1; }); (list || []).forEach(function(x){ if(x && x.i && !ids[x.i]){ o.push(x); ids[x.i] = 1; } }); try{ localStorage.setItem(OUTKEY, JSON.stringify(o)); }catch(e){} }
+  function isoDay(n){ var d = new Date(); d.setDate(d.getDate() + n); return d.getFullYear() + "-" + (d.getMonth() < 9 ? "0" : "") + (d.getMonth() + 1) + "-" + (d.getDate() < 10 ? "0" : "") + d.getDate(); }
+  function sendTodo(day){ var n = nPicked(); if(!n){ toast("Nothing on the list yet"); return; }
+    var id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    var x = {i:id, n:"Do the shopping (" + n + (n === 1 ? " thing)" : " things)"), l:"https://listbyaisle.com" + myPageUrl({id:"todo-" + id, name:"Shopping list", s:mySnap()}), d:day, f:"ListbyAisle", t:Date.now()};
+    outMerge([x]); if(typeof acctPush === "function") acctPush();   // signed in: it reaches DobyToday on your other phones too
+    var j = JSON.stringify({i:x.i, n:x.n, l:x.l, d:x.d, f:x.f}), b64 = btoa(unescape(encodeURIComponent(j))).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    $("sendBox").hidden = true; window.open("https://dobytoday.com/#add=" + b64, "_blank", "noopener"); toast("Sent to your to-do list"); }
+  $("sendTodo").addEventListener("click", function(){ var o = $("sendBox").hidden; $("sendBox").hidden = !o; if(o){ $("sendDate").min = isoDay(1); } });
+  $("sendBox").addEventListener("click", function(e){ var b = e.target.closest("[data-sday]"); if(b) sendTodo(isoDay(+b.dataset.sday)); });
+  $("sendDate").addEventListener("change", function(){ if(this.value) sendTodo(this.value); });
   $("shareStop").addEventListener("click", stopShare);
   document.addEventListener("visibilitychange", function(){ if(!document.hidden) syncPull(); });
   window.addEventListener("focus", syncPull);
@@ -1409,10 +1428,10 @@ var RULES = [
   function acctState(t){ var el = $("acState"); if(el) el.textContent = t; }
   function acctPush(){ if(aApplying) return; setLocalT(Date.now()); if(!AUSER || !asb) return; clearTimeout(apushT); apushT = setTimeout(function(){
     var raw; try{ raw = JSON.parse(localStorage.getItem(KEY) || "{}"); }catch(e){ raw = {}; }
-    acctState("Saving…"); asb.rpc("hlt_save", {p_site:SITE, p_data:{s:raw, t:localT(), m:myLoad(), r:myrLoad()}}).then(function(res){ acctState(res.error ? "Saved on this phone – it'll save to your account when you're connected" : "✓ Saved to your account"); }); }, 1500); }
+    acctState("Saving…"); asb.rpc("hlt_save", {p_site:SITE, p_data:{s:raw, t:localT(), o:outLoad(), m:myLoad(), r:myrLoad()}}).then(function(res){ acctState(res.error ? "Saved on this phone – it'll save to your account when you're connected" : "✓ Saved to your account"); }); }, 1500); }
   function acctPull(first){ if(!AUSER || !asb) return;
     asb.rpc("hlt_get", {p_site:SITE}).then(function(res){ if(res.error) return acctState("Saved on this phone – it'll save to your account when you're connected");
-      var d = res.data, lt = localT();
+      var d = res.data, lt = localT(); if(d && Array.isArray(d.o)) outMerge(d.o);
       var blank = !nPicked() && !(typeof myLoad === "function" && myLoad().length) && !(typeof myrLoad === "function" && myrLoad().recipes.length); // a new phone with nothing on it never overwrites your account
       if(d && d.s && (first || blank || (d.t || 0) > lt)){ // just signed in: the list saved in your account wins
         aApplying = true; try{ localStorage.setItem(KEY, JSON.stringify(d.s)); }catch(e){}
