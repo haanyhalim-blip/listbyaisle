@@ -644,7 +644,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v187</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v188</span></p>
 </div>
 </div>
 
@@ -1491,9 +1491,9 @@ var RULES = [
   // Switcher between DobyToday, PackbyBag and ListbyAisle. Going across while signed in asks the server for a
   // one-time pass, so you arrive signed in on the other site too (each site keeps its own sign-in).
   var SW_ME = "listbyaisle.com", SW_FN = SB_URL + "/functions/v1/hyper-processor";
-  var SW_SITES = [{h:"dobytoday.com", n:"DoByToday", d:"Today\u2019s jobs & shared lists", i:"\u2705", c:"#f7e3d6"},
-    {h:"packbybag.com", n:"PackByBag", d:"Packing lists, bag by bag", i:"\uD83E\uDDF3", c:"#dfeee6"},
-    {h:"listbyaisle.com", n:"ListByAisle", d:"Shopping, sorted by aisle", i:"\uD83D\uDED2", c:"#e3e8f6"}];
+  var SW_SITES = [{h:"dobytoday.com", n:"DoByToday", d:"To-do lists, by when", i:"\u2705", c:"#f7e3d6"},
+    {h:"packbybag.com", n:"PackByBag", d:"Packing lists, by bag", i:"\uD83E\uDDF3", c:"#dfeee6"},
+    {h:"listbyaisle.com", n:"ListByAisle", d:"Shopping lists, by aisle", i:"\uD83D\uDED2", c:"#e3e8f6"}];
   function swDraw(){ $("swCard").innerHTML = SW_SITES.map(function(x){ var on = x.h === SW_ME;
       return '<a ' + (on ? 'class="on" aria-current="page"' : 'href="https://' + x.h + '/" data-sw="' + x.h + '"') + '><span class="sic" style="background:' + x.c + '">' + x.i + '</span><span><b>' + x.n + '</b><small>' + x.d + '</small></span>' + (on ? '<span class="stk" aria-hidden="true">\u2713</span>' : '') + '</a>'; }).join("")
       + '<div class="snote">' + (AUSER ? "You stay signed in when you switch." : "Sign in once here and you\u2019ll stay signed in when you switch.") + '</div>'; }
