@@ -564,7 +564,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   <h2 class="ltitle stitle">Search</h2>
   <div class="row">
     <div class="qwrap"><input id="q" placeholder="Type or paste your list – milk, toilet paper, bananas…" autocomplete="off" autocapitalize="off" enterkeyhint="search"><button id="qClear" type="button" aria-label="Clear search" hidden>×</button></div>
-    <button class="btn totop" id="toTop" type="button" hidden>↑ My list</button>
+    <button class="btn totop" id="toTop" type="button" hidden>↑ My current list</button>
   </div>
   <p class="jumps"><a class="jump" data-to="mylBtn" href="#">My saved lists</a> · <a class="jump" data-to="listBtn" href="#">Ready-made lists</a> · <a class="jump" data-to="shopBtn" href="#">Browse by aisle</a> · <a class="jump" data-to="recBtn" href="#">Recipes</a></p>
 </div>
@@ -577,7 +577,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
 
 <section id="listSec">
     <div class="lhead">
-      <div class="ltwrap"><h2 class="ltitle"><button class="sect mine" id="mineBtn" type="button" aria-expanded="true" aria-controls="mineBody"><span class="c"></span>My list</button></h2><span class="htally" id="htally"></span></div>
+      <div class="ltwrap"><h2 class="ltitle"><button class="sect mine" id="mineBtn" type="button" aria-expanded="true" aria-controls="mineBody"><span class="c"></span>My current list</button></h2><span class="htally" id="htally"></span></div>
       <div class="vtog" id="vtog" hidden role="group" aria-label="How to show my list"><button type="button" data-v="aisle" aria-pressed="true">Aisle</button><button type="button" data-v="az" aria-pressed="false">A–Z</button></div>
       <button class="hic hshare" id="mineShare" type="button" aria-expanded="false" aria-controls="shareBox" title="Share this list"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></svg><span class="cap"></span></button>
       <button class="hic" id="mylSaveLink" type="button" hidden title="Save to My saved lists"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span class="cap">Save</span></button>
@@ -644,7 +644,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v188</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v189</span></p>
 </div>
 </div>
 
@@ -836,7 +836,7 @@ var RULES = [
       Object.keys(byL).sort().forEach(function(L){
         var g = byL[L].sort(function(x, y){ return x.k < y.k ? -1 : x.k > y.k ? 1 : 0; }); shown += g.length;
         var pk = g.filter(function(x){ return x.own || S.picked[x.it.n]; }).length, k = "_az_" + L, open = !!OPEN[k];
-        html += '<h2 class="aisle"><button class="ah" data-a="'+k+'" aria-expanded="'+open+'"><span class="c"></span>'+L+'<span class="n">'+(pk ? '<span class="golist" role="link" title="See these on My list">'+pk+' on list · <u>View</u> ›</span>' : '')+'</span></button></h2><div class="grid"'+(open ? '' : ' hidden')+'>';
+        html += '<h2 class="aisle"><button class="ah" data-a="'+k+'" aria-expanded="'+open+'"><span class="c"></span>'+L+'<span class="n">'+(pk ? '<span class="golist" role="link" title="See these on My current list">'+pk+' on list · <u>View</u> ›</span>' : '')+'</span></button></h2><div class="grid"'+(open ? '' : ' hidden')+'>';
         g.forEach(function(x){
           if(x.own){ var o = x.own; html += '<button class="it own'+(o.got?" got":"")+'" data-own="'+x.i+'" aria-pressed="true"><span class="box"></span><span><span class="nm">'+esc(o.n)+'</span>'+leafTag(!!o.org)+'<small class="al">'+esc(aisleName[o.a] || "Other")+'</small></span></button>'; return; }
           var it = x.it, on = !!S.picked[it.n], got = on && !!S.got[it.n];
@@ -854,7 +854,7 @@ var RULES = [
       var pk = g.filter(function(it){ return S.picked[it.n]; }).length + og.length;
       var open = !!q || mine || !!OPEN[a[0]];
       if(!mine && GROUPS[a[0]] && !grpShown){ grpShown = true; html += '<div class="grpdiv"><b>Handy groups</b><span>Not aisles – just quick ways to find things</span></div>'; }
-      html += '<h2 class="aisle'+(GROUPS[a[0]] && !mine ? ' grp' : '')+'"><button class="ah" data-a="'+a[0]+'" aria-expanded="'+open+'"><span class="c"></span>'+esc(a[1])+'<span class="n">'+(pk && !mine ? '<span class="golist" role="link" title="See these on My list">'+pk+' on list · <u>View</u> ›</span>' : '')+'</span></button></h2><div class="grid"'+(open ? '' : ' hidden')+'>';
+      html += '<h2 class="aisle'+(GROUPS[a[0]] && !mine ? ' grp' : '')+'"><button class="ah" data-a="'+a[0]+'" aria-expanded="'+open+'"><span class="c"></span>'+esc(a[1])+'<span class="n">'+(pk && !mine ? '<span class="golist" role="link" title="See these on My current list">'+pk+' on list · <u>View</u> ›</span>' : '')+'</span></button></h2><div class="grid"'+(open ? '' : ' hidden')+'>';
       if(!mine && !q) html += '<div class="addrow" data-add="'+a[0]+'"><input placeholder="Search or add to '+esc(a[1])+'…" autocomplete="off" autocapitalize="off" enterkeyhint="done"><button class="btn primary" type="button">Add</button></div>';
       og.forEach(function(p){ if(mine){ html += mineOwn(p[0], p[1]); return; } html += '<button class="it own'+(p[0].got?" got":"")+'" data-own="'+p[1]+'" aria-pressed="true"><span class="box"></span><span><span class="nm">'+esc(p[0].n)+'</span>'+'<span class="leaf'+(p[0].org ? '' : ' off')+'" role="button" title="Organic on/off" aria-label="Organic">O</span>'+'<small><span class="by">added by you · </span><span class="mv" role="button">change aisle</span></small></span></button>'; });
       g.forEach(function(it){ var on = !!S.picked[it.n], got = on && !!S.got[it.n]; if(mine){ html += mineBtn(it); return; }
