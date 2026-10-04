@@ -1,4 +1,4 @@
-<!-- ListbyAisle v153 -->
+<!-- ListbyAisle v190 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -546,6 +546,13 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
 @media (max-width:560px){.swwrap{order:5;position:static!important}.swcard{left:0;right:auto;top:calc(100% - 4px);z-index:2000}}
 .swcard .snote{font-size:.78rem;color:var(--muted);padding:6px 10px 4px;border-top:1px dashed var(--line);margin-top:4px;line-height:1.35}
 .filt{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin:0 0 4px}
+.sfold{grid-column:1/-1;border:1.5px solid var(--green);border-radius:10px;background:var(--card)}
+.sfold>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:12px 14px;font-weight:700;color:var(--green-deep)}
+.sfold>summary::-webkit-details-marker{display:none}
+.sfold>summary::before{content:"";width:8px;height:8px;border-right:2.5px solid currentColor;border-bottom:2.5px solid currentColor;transform:rotate(-45deg);transition:transform .15s;flex:none}
+.sfold[open]>summary::before{transform:rotate(45deg)}
+.sfold .st{flex:1}.sfold .sn{font-size:.8rem;font-weight:400;color:var(--muted)}
+.sfold>.trips{padding:4px 12px 12px}
 .fchip{border:1.5px solid var(--ink);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 13px;font:inherit;font-size:.88rem;font-weight:700;cursor:pointer}
 .fchip[aria-pressed="true"]{background:var(--ink);color:#fff}
 .suggestbox{display:flex;align-items:center;gap:12px;width:100%;margin:12px 0 4px;padding:12px 14px;text-align:left;font:inherit;color:var(--ink);background:var(--card);border:1.5px dashed var(--green);border-radius:12px;cursor:pointer}
@@ -644,7 +651,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v189</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v190</span></p>
 </div>
 </div>
 
@@ -1068,9 +1075,11 @@ var RULES = [
 
   var LGROUPS = [["everyday", "Everyday", ["weekly","topup"]], ["world", "World kitchens", ["british","american","indian","chinese","middleeast","italian"]], ["diet", "Diets", ["vegan","vegetarian","whole"]]], LTF = "all";
   function drawLists(){
-    var inG = function(t){ if(LTF === "all") return true; var g = LGROUPS.filter(function(x){ return x[0] === LTF; })[0]; return !!g && g[2].indexOf(t.id) >= 0; };
-    $("lists").innerHTML = '<div class="filt" role="group" aria-label="Show">' + [["all", "All"]].concat(LGROUPS).map(function(g){ return '<button type="button" class="fchip" data-tf="' + g[0] + '" aria-pressed="' + (LTF === g[0]) + '">' + esc(g[1]) + "</button>"; }).join("") + "</div>"
-      + LISTS.filter(inG).map(function(t){ return '<button class="trip" type="button" data-list="'+t.id+'"><b>'+esc(t.name)+'</b><small>'+esc(t.blurb)+'</small><span class="n">'+t.items.length+' items · tap to see them</span></button>'; }).join("");
+    // One collapsed row per group (closed until you open it)
+    var card = function(t){ return '<button class="trip" type="button" data-list="'+t.id+'"><b>'+esc(t.name)+'</b><small>'+esc(t.blurb)+'</small><span class="n">'+t.items.length+' items · tap to see them</span></button>'; };
+    var seen = {}, G = LGROUPS.map(function(g){ var ls = LISTS.filter(function(t){ return g[2].indexOf(t.id) >= 0; }); ls.forEach(function(t){ seen[t.id] = 1; }); return [g[0], g[1], ls]; });
+    var rest = LISTS.filter(function(t){ return !seen[t.id]; }); if(rest.length) G.push(["other", "More lists", rest]);
+    $("lists").innerHTML = G.filter(function(g){ return g[2].length; }).map(function(g){ return '<details class="sfold grp ' + g[0] + '"><summary><span class="st">' + esc(g[1]) + '</span><span class="sn">' + g[2].length + (g[2].length === 1 ? ' list' : ' lists') + '</span></summary><div class="trips">' + g[2].map(card).join("") + '</div></details>'; }).join("");
   }
   function addList(id){
     var t = LISTS.filter(function(x){ return x.id === id; })[0]; if(!t) return; var n = 0;
@@ -1110,7 +1119,7 @@ var RULES = [
       var nm = d.name; closePick(); save(); render(); openMine();
       toast(n2 ? nm + ": " + n2 + " items added" : "All of those are on your list already"); } }
   $("listPick").addEventListener("click", onPickClick); $("recPick").addEventListener("click", onPickClick);
-  $("lists").addEventListener("click", function(e){ var fc = e.target.closest("[data-tf]"); if(fc){ e.stopPropagation(); LTF = fc.dataset.tf; drawLists(); return; } var b = e.target.closest(".trip"); if(b && !lpOpen("list", b.dataset.list, true)) openPick("list", b.dataset.list); });
+  $("lists").addEventListener("click", function(e){ var b = e.target.closest(".trip"); if(b && !lpOpen("list", b.dataset.list, true)) openPick("list", b.dataset.list); });
   $("listSuggest").addEventListener("click", function(){ var fx = $("feedback"); fx.hidden = false; $("fbBtn").setAttribute("aria-expanded", "true"); if(!$("fbtext").value) $("fbtext").value = "A list idea for the website: "; fx.scrollIntoView({block:"start", behavior:"smooth"}); setTimeout(function(){ $("fbtext").focus(); }, 300); });
   drawLists();
   var RTYPES = ["Mains","Sides","Breakfast","Snacks & treats","Dips & sauces","Drinks"];
