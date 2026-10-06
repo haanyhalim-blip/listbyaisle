@@ -1,4 +1,4 @@
-<!-- ListbyAisle v198 -->
+<!-- ListbyAisle v199 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -660,7 +660,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v198</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v199</span></p>
 </div>
 </div>
 
@@ -1137,6 +1137,8 @@ var RULES = [
   function recCard(r, c){ var how = r.url ? ' · recipe link' : (r.steps || r.note) ? ' · with method' : '';
     return '<button class="trip rcard" type="button" data-rec="'+r.id+'"><b>'+esc(r.name)+'</b><small>'+(r.by ? esc(r.by)+(r.serves ? ' · serves '+esc(r.serves) : '') : r.url ? 'Serves '+esc(r.serves)+' · by '+esc(c.chef) : 'Makes '+esc(r.serves))+'</small><span class="n">'+r.items.length+' ingredients'+how+' · tap to open</span></button>'; }
   function recCards(c){ if(!c.recipes.some(function(r){ return r.type; })) return c.recipes.map(function(r){ return recCard(r, c); }).join("");
+    if(c.sections) return c.sections.map(function(x){ var rs = c.recipes.filter(function(r){ return r.type === x.type; });   // e.g. Good food for kids: one closed row per section
+      return rs.length ? '<details class="sfold"><summary><span class="st">' + esc(x.type) + '</span><span class="sn">' + rs.length + (rs.length === 1 ? ' recipe' : ' recipes') + '</span></summary><div class="trips">' + rs.map(function(r){ return recCard(r, c); }).join("") + '</div></details>' : ""; }).join("");
     return (c.types || RTYPES).map(function(t){ var rs = c.recipes.filter(function(r){ return r.type === t; }); return rs.length ? '<p class="rgrp">'+esc(t)+' <small>'+rs.length+'</small></p>' + rs.map(function(r){ return recCard(r, c); }).join("") : ""; }).join(""); }
   function drawRecipes(){
     $("recipes").innerHTML = RECIPES.map(function(c){
