@@ -1,4 +1,4 @@
-<!-- ListbyAisle v197 -->
+<!-- ListbyAisle v198 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -513,6 +513,8 @@ body.lpopen{overflow:hidden}
 .lpmeta{margin:0 0 12px;color:var(--muted);font-size:.95rem}
 .lpadd{margin:4px 0 14px}
 .colhint{color:var(--muted);margin:4px 0 10px}
+.colgo{margin:-4px 0 12px;font-size:.92rem;line-height:1.9}
+.colgo a{font-weight:700;color:var(--green-deep, #22452b)}
 .colnav{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 12px}
 body.lpopen .swwrap{display:none}
 .lpadd .btn{display:block;width:100%;font-size:1.08rem;padding:14px 16px;border-radius:12px}
@@ -658,7 +660,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v197</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v198</span></p>
 </div>
 </div>
 
@@ -1138,7 +1140,9 @@ var RULES = [
     return (c.types || RTYPES).map(function(t){ var rs = c.recipes.filter(function(r){ return r.type === t; }); return rs.length ? '<p class="rgrp">'+esc(t)+' <small>'+rs.length+'</small></p>' + rs.map(function(r){ return recCard(r, c); }).join("") : ""; }).join(""); }
   function drawRecipes(){
     $("recipes").innerHTML = RECIPES.map(function(c){
-      return '<div class="chef"><h3><button class="chefbtn" type="button" data-chef="'+esc(c.chef)+'" aria-expanded="false"><span class="c"></span>'+esc(c.chef)+'<span class="ab">'+esc(String(c.about || "").split(/(?<=[.!?])\s/)[0])+'</span><span class="cn">'+c.recipes.length+(c.recipes.length === 1 ? ' recipe' : ' recipes')+' · tap to open</span></button></h3><div class="chefbody" hidden><p class="about">'+esc(c.about)+(c.site ? ' <a href="'+esc(c.site)+'" target="_blank" rel="noopener">Website</a>' : '')+(c.yt ? ' · <a href="'+esc(c.yt)+'" target="_blank" rel="noopener">YouTube</a>' : '')+'</p><div class="trips">'
+      return '<div class="chef"><h3><button class="chefbtn" type="button" data-chef="'+esc(c.chef)+'" aria-expanded="false"><span class="c"></span>'+esc(c.chef)+'<span class="ab">'+esc(String(c.about || "").split(/(?<=[.!?])\s/)[0])+'</span><span class="cn">'+c.recipes.length+(c.recipes.length === 1 ? ' recipe' : ' recipes')+' · tap to open</span></button></h3><div class="chefbody" hidden><p class="about">'+esc(c.about)+(c.site ? ' <a href="'+esc(c.site)+'" target="_blank" rel="noopener">Website</a>' : '')+(c.yt ? ' · <a href="'+esc(c.yt)+'" target="_blank" rel="noopener">YouTube</a>' : '')+'</p>'
+        + (c.slug ? '<p class="colgo"><a href="/' + esc(c.slug) + '" data-col="' + esc(c.slug) + '">Open ' + esc(c.chef) + ' as its own page →</a>' + (c.sections ? ' · ' + c.sections.map(function(x){ return '<a href="/' + esc(x.slug) + '" data-col="' + esc(x.slug) + '">' + esc(x.type) + '</a>'; }).join(' · ') : '') + '</p>' : '')
+        + '<div class="trips">'
         + recCards(c)
         + '</div><p class="chefend"><button class="link quiet chefclose" type="button">▲ Close '+esc(c.chef)+'</button></p></div></div>'; }).join("");
   }
@@ -1160,6 +1164,7 @@ var RULES = [
     save(); render(); openMine();
     toast(n ? r.name + ": " + n + " items added, with amounts. Tap anything you don't need." : "All of those are on your list already");
   }
+  $("recipes").addEventListener("click", function(e){ var a = e.target.closest("[data-col]"); if(!a) return; e.preventDefault(); colOpen(a.dataset.col, true); });   // a group's own page, e.g. /good-food-for-kids
   $("recipes").addEventListener("click", function(e){ var b = e.target.closest("[data-rec]"); if(b && !lpOpen("rec", b.dataset.rec, true)) openPick("rec", b.dataset.rec); });
   $("recSuggest").addEventListener("click", function(){ var fx = $("feedback"); fx.hidden = false; $("fbBtn").setAttribute("aria-expanded", "true"); if(!$("fbtext").value) $("fbtext").value = "A recipe or cook you should add: "; fx.scrollIntoView({block:"start", behavior:"smooth"}); setTimeout(function(){ $("fbtext").focus(); }, 300); });
   drawRecipes();
