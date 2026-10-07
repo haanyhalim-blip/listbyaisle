@@ -1,4 +1,4 @@
-<!-- ListbyAisle v206 -->
+<!-- ListbyAisle v207 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -698,7 +698,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v206</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v207</span></p>
 </div>
 </div>
 
@@ -1420,12 +1420,18 @@ var RULES = [
       {n:"Fruit pouches, juice and smoothies", says:["No added sugar","2 of your 5 a day"], made:"Puréed or juiced fruit (often an apple or banana base), sometimes a little veg, lemon juice", is:["sugar"],
        note:"'No added sugar' is true – but once fruit is blended or juiced, the NHS counts its sugar as 'free sugar', the kind to cut down on. Juice and smoothies only ever count as one of their 5 a day, and 150 ml a day is plenty.", add:"Serve with a meal rather than between meals, or stir a pouch into plain yoghurt.", rec:["gk-banana-bites"]},
       {n:"Flavoured yoghurts and tubes", says:["Source of calcium","Made for kids"], made:"Yoghurt or milk, sugar, fruit purée, modified starch, flavourings", is:["fill","sugar"],
-       note:"The yoghurt part is good – protein and calcium. The added sugar is what turns it into more of a pudding.", add:"Plain or Greek yoghurt with mashed berries or banana stirred in tastes much the same, and you decide how sweet.", rec:["gk-banana-bites"]}]},
+       note:"The yoghurt part is good – protein and calcium. The added sugar is what turns it into more of a pudding.", add:"Plain or Greek yoghurt with mashed berries or banana stirred in tastes much the same, and you decide how sweet.", rec:["gk-banana-bites"]},
+      {n:"Flavoured milk and milkshakes", says:["Source of calcium","Made with real milk"], made:"Milk, sugar, cocoa or flavouring, a thickener such as carrageenan or gellan gum", is:["fill","sugar"],
+       note:"The milk is good – protein and calcium. The sugar added for the flavour counts as free sugar; the natural sugar in plain milk doesn't.", add:"Plain milk, or half flavoured and half plain while they get used to it.", rec:[]},
+      {n:"Yoghurt-coated raisins and snacks", says:["Made with real yoghurt","Fruit"], made:"Sugar, vegetable fat, yoghurt powder, emulsifier, coating raisins or fruit pieces", is:["sugar","fat"],
+       note:"The 'yoghurt' coating is mostly sugar and fat with a little yoghurt powder – closer to white chocolate than to yoghurt.", add:"Plain raisins with a pot of real yoghurt, at a mealtime.", rec:["gk-banana-bites"]}]},
     {h:"Mostly quick starch", d:"Starch is fuel, and the body turns it into glucose quickly. Fine in its place – but on its own it doesn't keep children full for long.", items:[
       {n:"Rice cakes and mini rice snacks", says:["Baked not fried","Low fat"], made:"Puffed rice (sometimes corn), salt – flavoured ones add sugar, cheese powder or a yoghurt or chocolate coating", is:["starch"],
        note:"Plain rice cakes are one of the NHS's own snack ideas. They're light because they're mostly air and starch, so children are often hungry again soon after.", add:"Spread with peanut butter, hummus or cream cheese and they become a proper snack.", rec:["gk-veg-crackers"]},
       {n:"Breadsticks, crackers and pretzels", says:["Baked","Lunchbox size"], made:"Wheat flour, vegetable oil, salt, yeast", is:["starch"],
-       note:"Bread, made crunchy. Nothing wrong with that – it's just another starch.", add:"Give them something to dip – hummus, cream cheese or a yoghurt dip.", rec:["gk-veg-crackers","gk-pitta-pockets"]}]},
+       note:"Bread, made crunchy. Nothing wrong with that – it's just another starch.", add:"Give them something to dip – hummus, cream cheese or a yoghurt dip.", rec:["gk-veg-crackers","gk-pitta-pockets"]},
+      {n:"Popcorn – plain, sweet and toffee", says:["Wholegrain","Under 100 calories","Gluten free"], made:"Plain: popped corn, a little oil and salt. Sweet or toffee: corn, sugar, glucose syrup, butter", is:["starch","fill"],
+       note:"Plain popcorn really is wholegrain, with some fibre – one of the better crunchy snacks. Sweet and toffee popcorn is closer to sweets. Not for young children: it's a choking risk.", add:"Make it at home – a few spoonfuls of kernels in a lidded pan – and you decide the salt.", rec:[]}]},
     {h:"Starch and sugar", d:"Flour or oats held together with sugar and syrup – a biscuit by another name.", items:[
       {n:"Cereal bars and oat bars", says:["Wholegrain oats","Source of fibre"], made:"Oats or cereal crisps, glucose syrup, sugar or honey, vegetable oil, sometimes a chocolate or yoghurt coating", is:["starch","sugar"],
        note:"Oats are great. The syrups that glue them together are sugar – often two or three kinds, each listed separately so none looks big.", add:"Home-made oat bites, or one bar with a piece of fruit rather than two bars.", rec:["gk-energy-balls"]},
@@ -1435,6 +1441,11 @@ var RULES = [
        note:"No surprises here, and none needed – just worth knowing a mini pack is still a biscuit.", add:"Lovely as a treat. On everyday days, oatcakes with cheese do the same job and last longer.", rec:["gk-cheese-oatcakes"]},
       {n:"Brioche, pancakes, muffins and malt loaf", says:["Lunchbox ready","Lower fat"], made:"Wheat flour, sugar, eggs, butter or oil, sometimes chocolate chips", is:["starch","sugar"],
        note:"Sweet bread. Malt loaf is one of the lower-fat ones and an NHS snack idea, but it's still sweet bread.", add:"Wholemeal toast or a crumpet with a scrape of spread is the plainer version.", rec:[]}]},
+    {h:"Real food, extra packaging", d:"There's real food in these – just with more salt, processing or packaging than the plain version.", items:[
+      {n:"Cheese strings and snack cheese", says:["Source of calcium","Fun to peel"], made:"Cheese (usually mozzarella-style), salt, sometimes colouring or flavouring", is:["fill","fat"],
+       note:"It really is cheese – protein and calcium. It's just more processed than a block of cheese, and costs a lot more for the same amount.", add:"Cubes of ordinary cheddar do the same job for less.", rec:["gk-cheese-oatcakes"]},
+      {n:"Lunch kits – crackers, cheese and ham", says:["Lunchbox ready","Source of protein"], made:"Crackers (wheat flour, oil, salt), processed cheese, ham with added water and salt, sometimes a small sweet treat", is:["starch","fat"],
+       note:"A lot of packaging around a small amount of food. The cheese is often processed cheese spread, and the salt adds up quickly.", add:"Build your own in a lunchbox – crackers, real cheese, some ham or chicken, and cucumber.", rec:["gk-snack-box"]}]},
     {h:"Starch, fat and salt", d:"The crunchy ones. Different shapes and colours, much the same inside.", items:[
       {n:"Crisps", says:["Cooked in sunflower oil","No MSG"], made:"Potatoes, sunflower or rapeseed oil, salt, flavouring", is:["starch","fat"],
        note:"Potato is starch, frying adds the fat, and the flavour is mostly salt.", add:"Keep them for weekends and parties. For crunch on school days, try roasted chickpeas or veg sticks.", rec:["gk-roast-chickpeas"]},
@@ -1460,7 +1471,7 @@ var RULES = [
           + '<p class="snksays"><span>The pack says</span>' + it.says.map(function(x){ return '<q>' + esc(x) + '</q>'; }).join(" ") + '</p>'
           + '<p><b>Usually made of:</b> ' + esc(it.made) + '</p>'
           + '<p>' + esc(it.note) + '</p>'
-          + '<p class="snkadd"><b>Easy way to make it more filling:</b> ' + esc(it.add) + '</p>'
+          + '<p class="snkadd"><b>Easy upgrade:</b> ' + esc(it.add) + '</p>'
           + (it.rec.length ? '<p class="snkrecs">' + sgRecs(it.rec) + '</p>' : '') + '</div></details>';
       });
     });
