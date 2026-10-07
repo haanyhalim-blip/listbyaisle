@@ -1,4 +1,4 @@
-<!-- ListbyAisle v211 -->
+<!-- ListbyAisle v212 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -193,6 +193,17 @@ body.searching #shopBox[hidden]{display:block}
 #mine h2.aisle.rm .ah .sub{font-size:.78rem;font-weight:400;color:var(--muted);margin-left:4px}
 .toast .undo{margin-left:12px;font:inherit;font-weight:700;color:#fff;background:none;border:1.5px solid rgba(255,255,255,.7);border-radius:6px;padding:2px 9px;cursor:pointer}
 #mine .rmfoot{padding:6px 4px}
+#mine h2.aisle.trl{margin-top:18px}
+#mine h2.aisle.trl .ah{cursor:pointer;color:var(--green);font-size:.86rem;background:none}
+#mine h2.aisle.trl .ah .c{display:inline-block;transform:rotate(-45deg)}
+#mine h2.aisle.trl .ah[aria-expanded="true"] .c{transform:rotate(45deg)}
+#mine h2.aisle.trl .ah .sub{font-size:.76rem;font-weight:400;color:var(--muted);text-transform:none;letter-spacing:0;margin-left:4px}
+#mine h2.aisle.trl .ah .c{margin-right:8px}
+#mine .trlg .it.got .nm::after{display:none}
+#mine .trlg .trtip{font-size:.8rem;color:var(--muted);margin:4px 4px 2px}
+#mine .trfoot{padding:10px 4px 4px}
+#mine .trfoot .link{font:inherit;font-size:.85rem;font-weight:700;color:var(--accent);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline}
+#mine .empty.trall{padding:14px 4px}
 #shareBox .actions{margin:0}
 #shareBox .shared{margin-top:12px}
 .steps{display:grid;align-items:center}
@@ -704,7 +715,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v211</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v212</span></p>
 </div>
 </div>
 
@@ -885,8 +896,8 @@ var RULES = [
     }
     if(mine && VIEW === "az"){
       var flat = [], seenAz = {};
-      items.forEach(function(it){ if(S.picked[it.n] && !seenAz[it.n]){ seenAz[it.n] = 1; flat.push({k:norm(it.n), h:mineBtn(it)}); } });
-      S.own.forEach(function(o, i){ flat.push({k:norm(o.n), h:mineOwn(o, i)}); });
+      items.forEach(function(it){ if(S.picked[it.n] && !S.got[it.n] && !seenAz[it.n]){ seenAz[it.n] = 1; flat.push({k:norm(it.n), h:mineBtn(it)}); } });
+      S.own.forEach(function(o, i){ if(!o.got) flat.push({k:norm(o.n), h:mineOwn(o, i)}); });
       flat.sort(function(x, y){ return x.k < y.k ? -1 : x.k > y.k ? 1 : 0; });
       if(flat.length){ shown += flat.length; html += '<div class="grid az">' + flat.map(function(f){ return f.h; }).join('') + '</div>'; }
     } else if(!mine && BVIEW === "az"){
@@ -907,8 +918,8 @@ var RULES = [
       });
     } else
     AISLES.forEach(function(a){
-      var g = (mine && GROUPS[a[0]]) ? [] : items.filter(function(it){ return inSec(it, a[0]) && (!mine || S.picked[it.n]) && (!q || norm(it.n).indexOf(q) >= 0 || (ALIAS[q] && norm(ALIAS[q]) === norm(it.n))); });
-      var og = []; S.own.forEach(function(o, i){ if(o.a === a[0] && (!q || norm(o.n).indexOf(q) >= 0)) og.push([o, i]); });
+      var g = (mine && GROUPS[a[0]]) ? [] : items.filter(function(it){ return inSec(it, a[0]) && (!mine || (S.picked[it.n] && !S.got[it.n])) && (!q || norm(it.n).indexOf(q) >= 0 || (ALIAS[q] && norm(ALIAS[q]) === norm(it.n))); });
+      var og = []; S.own.forEach(function(o, i){ if(o.a === a[0] && !(mine && o.got) && (!q || norm(o.n).indexOf(q) >= 0)) og.push([o, i]); });
       if(!g.length && !og.length) return;
       g.sort(function(x, y){ var kx = norm(x.n), ky = norm(y.n); return kx < ky ? -1 : kx > ky ? 1 : 0; }); og.sort(function(x, y){ var kx = norm(x[0].n), ky = norm(y[0].n); return kx < ky ? -1 : kx > ky ? 1 : 0; });
       shown += g.length + og.length;
@@ -923,7 +934,8 @@ var RULES = [
       html += '</div>';
     });
     var rmHtml = "";
-    if(mine) return rmHtml + (shown ? html : '<div class="empty"><b>Nothing on your list yet</b>Search at the top, start from a ready-made list, or browse by aisle.</div>');
+    if(mine){ var tg = trolleyHTML(); if(tg && !shown) html = '<div class="empty trall"><b>All in the trolley ✓</b>Everything on your list is in the trolley.</div>';
+      return rmHtml + (shown || tg ? html + tg : '<div class="empty"><b>Nothing on your list yet</b>Search at the top, start from a ready-made list, or browse by aisle.</div>'); }
     if(shown) return html;
     return mine ? '<div class="empty"><b>Nothing on your list yet</b>Search at the top, start from a ready-made list, or browse by aisle.</div>'
                 : (splitRaw(query).length > 1
@@ -950,9 +962,20 @@ var RULES = [
     save(); render(); toast("Back on the list: " + r.n); }
   function toast(m, undo){ var d = document.createElement("div"); d.className = "toast"; d.textContent = m; if(undo){ var u = document.createElement("button"); u.type = "button"; u.className = "undo"; u.textContent = "Undo"; u.addEventListener("click", function(){ d.remove(); undo(); }); d.appendChild(u); }
     document.querySelectorAll(".toast").forEach(function(x){ x.remove(); }); document.body.appendChild(d); setTimeout(function(){ d.remove(); }, undo ? 6000 : 2200); }
-  // In the shop: tap once and it's in the trolley; tap it again and it comes off the list, so the list stays clear
-  var TROLLEYTIP = false;
-  function trolleyHint(){ if(TROLLEYTIP) return; TROLLEYTIP = true; try{ if(localStorage.getItem("listbyaisle-trolleytip")) return; localStorage.setItem("listbyaisle-trolleytip", "1"); }catch(e){} toast("In the trolley ✓ – tap it again to take it off the list"); }
+  // In the shop: tap an item and it moves down into "In the trolley" at the bottom of the list, so the list stays clear.
+  // Nothing is lost – open "In the trolley" and tap an item to put it back on the list.
+  function trolleyItems(){ var t = []; items.forEach(function(it){ if(S.picked[it.n] && S.got[it.n] && !t.some(function(x){ return x.it && x.it.n === it.n; })) t.push({k:norm(it.n), it:it}); });
+    S.own.forEach(function(o, i){ if(o.got) t.push({k:norm(o.n), o:o, i:i}); }); t.sort(function(x, y){ return x.k < y.k ? -1 : x.k > y.k ? 1 : 0; }); return t; }
+  function trolleyHTML(){ var t = trolleyItems(); if(!t.length) return ""; var open = !!OPEN._trolley;
+    return '<h2 class="aisle trl"><button class="ah" data-a="_trolley" aria-expanded="'+open+'"><span class="c"></span>🛒 In the trolley <span class="sub">'+t.length+' · tap to '+(open ? 'hide' : 'see')+'</span></button></h2>'
+      + '<div class="grid trlg"'+(open ? '' : ' hidden')+'><p class="trtip">Tap an item to put it back on the list.</p>' + t.map(function(x){ return x.o ? mineOwn(x.o, x.i) : mineBtn(x.it); }).join('')
+      + '<div class="trfoot"><button class="link" id="trClear" type="button">Finished shopping – clear these from the list</button></div></div>'; }
+  function toTrolley(name, set){ save(); render(); toast(name + " – in the trolley ✓", function(){ set(false); save(); render(); }); }
+  function clearTrolley(){ var t = trolleyItems(); if(!t.length) return; if(!confirm("Take the " + t.length + " item" + (t.length === 1 ? "" : "s") + " in the trolley off your list?")) return;
+    var before = JSON.stringify({picked:S.picked, got:S.got, own:S.own, org:S.org, qty:S.qty || {}, note:S.note || {}});
+    t.forEach(function(x){ var n = x.it ? x.it.n : x.o.n; if(x.it){ delete S.picked[n]; delete S.got[n]; delete S.org[n]; } if(S.qty) delete S.qty[n]; if(S.note) delete S.note[n]; });
+    S.own = S.own.filter(function(o){ return !o.got; }); OPEN._trolley = 0; save(); render();
+    toast(t.length + " taken off the list", function(){ var b = JSON.parse(before); S.picked = b.picked; S.got = b.got; S.own = b.own; S.org = b.org; S.qty = b.qty; S.note = b.note; save(); render(); }); }
   function takeOff(b){ var r; if(b.dataset.own !== undefined){ var o = S.own[+b.dataset.own]; if(!o) return; r = {n:o.n, org:!!o.org, own:{a:o.a}}; S.own.splice(+b.dataset.own, 1); }
     else { r = {n:b.dataset.n, org:!!S.org[b.dataset.n]}; delete S.picked[r.n]; delete S.got[r.n]; delete S.org[r.n]; }
     if(S.qty) delete S.qty[r.n]; if(S.note) delete S.note[r.n];
@@ -1087,8 +1110,9 @@ var RULES = [
       var t = document.querySelector('#mine .ah[data-a="'+a+'"]'); if(t) setTimeout(function(){ t.scrollIntoView({block:"start", behavior:"smooth"}); }, 30); return; }
     var h = e.target.closest(".ah");
     if(e.target.closest(".clearbtn")){ clearAll(); return; }
+    if(e.target.closest("#trClear")){ clearTrolley(); return; }
     if(e.target.closest("#rmForget")){ if(confirm("Clear the removed list?")){ S.removed = []; save(); render(); } return; }
-    if(h){ var k = h.dataset.a; if(k === "_removed"){ OPEN._removed = OPEN._removed === 1 ? 0 : 1; } else { if(query || h.closest("#mine")) return; if(OPEN[k]) delete OPEN[k]; else OPEN[k] = 1; }
+    if(h){ var k = h.dataset.a; if(k === "_removed"){ OPEN._removed = OPEN._removed === 1 ? 0 : 1; } else if(k === "_trolley"){ OPEN._trolley = OPEN._trolley ? 0 : 1; } else { if(query || h.closest("#mine")) return; if(OPEN[k]) delete OPEN[k]; else OPEN[k] = 1; }
       render(); return; }
     var b = e.target.closest(".it"); if(!b) return;
     if(e.target.closest(".mv") && b.dataset.own !== undefined){ e.stopPropagation(); var mo = S.own[+b.dataset.own]; if(mo){ closeMine(); askAisle([mo.n]); $("sortbox").scrollIntoView({block:"center"}); } return; }
@@ -1099,9 +1123,9 @@ var RULES = [
       save(); render(); return; }
     var inMine = !!b.closest("#mine");
     if(e.target.closest(".rmv")){ e.stopPropagation(); takeOff(b); return; }
-    if(b.dataset.own !== undefined){ var oi = +b.dataset.own, o = S.own[oi]; if(o){ if(inMine){ if(o.got){ takeOff(b); return; } o.got = true; save(); render(); trolleyHint(); } else takeOff(b); } return; }
+    if(b.dataset.own !== undefined){ var oi = +b.dataset.own, o = S.own[oi]; if(o){ if(inMine){ if(o.got){ o.got = false; save(); render(); toast(o.n + " – back on the list"); return; } o.got = true; toTrolley(o.n, function(v){ o.got = v; }); } else takeOff(b); } return; }
     var n = b.dataset.n, wasSearch = !!query.trim() && !inMine;
-    if(inMine){ if(S.got[n]){ takeOff(b); return; } S.got[n] = 1; save(); render(); trolleyHint(); return; }   // 1st tap: in the trolley · 2nd tap: off the list (with Undo)
+    if(inMine){ if(S.got[n]){ delete S.got[n]; save(); render(); toast(n + " – back on the list"); return; } S.got[n] = 1; toTrolley(n, function(v){ if(v) S.got[n] = 1; else delete S.got[n]; }); return; }   // tap: into the trolley (moves to the bottom) · tap it there: back on the list
     if(!S.picked[n]){ S.picked[n] = 1; if(orgMode) S.org[n] = 1; unpark(n); if(wasSearch){ save(); clearSearch(); openMine(); toast(n + " – on your list"); return; } } else { takeOff(b); return; }
     save(); render();
   }
