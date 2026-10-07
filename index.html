@@ -1,4 +1,4 @@
-<!-- ListbyAisle v210 -->
+<!-- ListbyAisle v211 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -704,7 +704,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v210</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v211</span></p>
 </div>
 </div>
 
@@ -950,6 +950,9 @@ var RULES = [
     save(); render(); toast("Back on the list: " + r.n); }
   function toast(m, undo){ var d = document.createElement("div"); d.className = "toast"; d.textContent = m; if(undo){ var u = document.createElement("button"); u.type = "button"; u.className = "undo"; u.textContent = "Undo"; u.addEventListener("click", function(){ d.remove(); undo(); }); d.appendChild(u); }
     document.querySelectorAll(".toast").forEach(function(x){ x.remove(); }); document.body.appendChild(d); setTimeout(function(){ d.remove(); }, undo ? 6000 : 2200); }
+  // In the shop: tap once and it's in the trolley; tap it again and it comes off the list, so the list stays clear
+  var TROLLEYTIP = false;
+  function trolleyHint(){ if(TROLLEYTIP) return; TROLLEYTIP = true; try{ if(localStorage.getItem("listbyaisle-trolleytip")) return; localStorage.setItem("listbyaisle-trolleytip", "1"); }catch(e){} toast("In the trolley ✓ – tap it again to take it off the list"); }
   function takeOff(b){ var r; if(b.dataset.own !== undefined){ var o = S.own[+b.dataset.own]; if(!o) return; r = {n:o.n, org:!!o.org, own:{a:o.a}}; S.own.splice(+b.dataset.own, 1); }
     else { r = {n:b.dataset.n, org:!!S.org[b.dataset.n]}; delete S.picked[r.n]; delete S.got[r.n]; delete S.org[r.n]; }
     if(S.qty) delete S.qty[r.n]; if(S.note) delete S.note[r.n];
@@ -1096,9 +1099,9 @@ var RULES = [
       save(); render(); return; }
     var inMine = !!b.closest("#mine");
     if(e.target.closest(".rmv")){ e.stopPropagation(); takeOff(b); return; }
-    if(b.dataset.own !== undefined){ var oi = +b.dataset.own, o = S.own[oi]; if(o){ if(inMine){ o.got = !o.got; save(); render(); } else takeOff(b); } return; }
+    if(b.dataset.own !== undefined){ var oi = +b.dataset.own, o = S.own[oi]; if(o){ if(inMine){ if(o.got){ takeOff(b); return; } o.got = true; save(); render(); trolleyHint(); } else takeOff(b); } return; }
     var n = b.dataset.n, wasSearch = !!query.trim() && !inMine;
-    if(inMine){ if(S.got[n]) delete S.got[n]; else S.got[n] = 1; save(); render(); return; }
+    if(inMine){ if(S.got[n]){ takeOff(b); return; } S.got[n] = 1; save(); render(); trolleyHint(); return; }   // 1st tap: in the trolley · 2nd tap: off the list (with Undo)
     if(!S.picked[n]){ S.picked[n] = 1; if(orgMode) S.org[n] = 1; unpark(n); if(wasSearch){ save(); clearSearch(); openMine(); toast(n + " – on your list"); return; } } else { takeOff(b); return; }
     save(); render();
   }
