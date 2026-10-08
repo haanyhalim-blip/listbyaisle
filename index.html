@@ -1,4 +1,4 @@
-<!-- ListbyAisle v213 -->
+<!-- ListbyAisle v214 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -195,6 +195,12 @@ body.searching #shopBox[hidden]{display:block}
 #mine h2.aisle.rm .ah .sub{font-size:.78rem;font-weight:400;color:var(--muted);margin-left:4px}
 .toast .undo{margin-left:12px;font:inherit;font-weight:700;color:#fff;background:none;border:1.5px solid rgba(255,255,255,.7);border-radius:6px;padding:2px 9px;cursor:pointer}
 #mine .rmfoot{padding:6px 4px}
+#mine .mrow.asking{flex-wrap:wrap!important}
+#mine .dconf{flex:1 1 100%;display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:2px 0 10px 30px;font-weight:800}
+#mine .dconf button{font:inherit;font-size:.92rem;font-weight:800;border-radius:999px;padding:7px 14px;cursor:pointer}
+#mine .dconf .dyes{background:var(--green);color:#fff;border:1.5px solid var(--green)}
+#mine .dconf .dno{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
+#mine .dconf button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 #mine h2.aisle.trl{margin-top:18px}
 #mine h2.aisle.trl .ah{cursor:pointer;color:var(--green);font-size:.86rem;background:none}
 #mine h2.aisle.trl .ah .c{display:inline-block;transform:rotate(-45deg)}
@@ -717,7 +723,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v213</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v214</span></p>
 </div>
 </div>
 
@@ -1099,7 +1105,14 @@ var RULES = [
   function ctlKey(c){ return c.dataset.own !== undefined ? ((S.own[+c.dataset.own] || {}).n || "") : c.dataset.n; }
   $("mine").addEventListener("input", function(e){ var i = e.target.closest(".qc"); if(!i) return; var n = ctlKey(i.closest(".mctl")); if(!n) return; S.note = S.note || {}; var v = i.value.trim(); if(v) S.note[n] = v; else delete S.note[n]; save(); $("paper").textContent = nPicked() ? asText() : "Nothing on the list yet"; });
   $("mine").addEventListener("keydown", function(e){ if(e.target.closest(".qc") && e.key === "Enter"){ e.preventDefault(); e.target.blur(); } });
+  // Tap an item on your list: "In the trolley? ✓ Yes / Not yet" – only Yes moves it down into In the trolley
+  var ASKYES = null;
+  function unaskT(){ ASKYES = null; document.querySelectorAll("#mine .mrow.asking").forEach(function(r){ r.classList.remove("asking"); var q = r.querySelector(".dconf"); if(q) q.remove(); }); }
+  function askTrolley(b, yes){ var row = b.closest(".mrow"); if(!row){ yes(); return; } var again = row.classList.contains("asking"); unaskT(); if(again) return;
+    ASKYES = yes; row.classList.add("asking"); row.insertAdjacentHTML("beforeend", '<span class="dconf" role="group" aria-label="Is it in the trolley?"><span>In the trolley?</span><button type="button" class="dyes" data-tyes="1">✓ Yes</button><button type="button" class="dno" data-tno="1">Not yet</button></span>');
+    var yb = row.querySelector(".dyes"); if(yb) yb.focus({preventScroll:true}); }
   function onListClick(e){
+    var ty = e.target.closest("[data-tyes],[data-tno]"); if(ty){ e.stopPropagation(); var fn = ty.hasAttribute("data-tyes") ? ASKYES : null; unaskT(); if(fn) fn(); return; }
     var mc = e.target.closest(".mctl");
     if(mc){ e.stopPropagation(); var rb = mc.closest(".mrow").querySelector(".it"); if(e.target.closest(".rmv")){ if(rb) takeOff(rb); return; }
       if(e.target.closest(".leaf") && rb){ if(rb.dataset.own !== undefined){ var lo = S.own[+rb.dataset.own]; if(lo) lo.org = !lo.org; } else { if(S.org[rb.dataset.n]) delete S.org[rb.dataset.n]; else S.org[rb.dataset.n] = 1; } save(); render(); return; }
@@ -1125,9 +1138,9 @@ var RULES = [
       save(); render(); return; }
     var inMine = !!b.closest("#mine");
     if(e.target.closest(".rmv")){ e.stopPropagation(); takeOff(b); return; }
-    if(b.dataset.own !== undefined){ var oi = +b.dataset.own, o = S.own[oi]; if(o){ if(inMine){ if(o.got){ o.got = false; save(); render(); toast(o.n + " – back on the list"); return; } o.got = true; toTrolley(o.n, function(v){ o.got = v; }); } else takeOff(b); } return; }
+    if(b.dataset.own !== undefined){ var oi = +b.dataset.own, o = S.own[oi]; if(o){ if(inMine){ if(o.got){ o.got = false; save(); render(); toast(o.n + " – back on the list"); return; } askTrolley(b, function(){ o.got = true; toTrolley(o.n, function(v){ o.got = v; }); }); } else takeOff(b); } return; }
     var n = b.dataset.n, wasSearch = !!query.trim() && !inMine;
-    if(inMine){ if(S.got[n]){ delete S.got[n]; save(); render(); toast(n + " – back on the list"); return; } S.got[n] = 1; toTrolley(n, function(v){ if(v) S.got[n] = 1; else delete S.got[n]; }); return; }   // tap: into the trolley (moves to the bottom) · tap it there: back on the list
+    if(inMine){ if(S.got[n]){ delete S.got[n]; save(); render(); toast(n + " – back on the list"); return; } askTrolley(b, function(){ S.got[n] = 1; toTrolley(n, function(v){ if(v) S.got[n] = 1; else delete S.got[n]; }); }); return; }   // tap: into the trolley (moves to the bottom) · tap it there: back on the list
     if(!S.picked[n]){ S.picked[n] = 1; if(orgMode) S.org[n] = 1; unpark(n); if(wasSearch){ save(); clearSearch(); openMine(); toast(n + " – on your list"); return; } } else { takeOff(b); return; }
     save(); render();
   }
