@@ -1,4 +1,4 @@
-<!-- ListbyAisle v214 -->
+<!-- ListbyAisle v215 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -629,6 +629,8 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
 .footlinks .ailogo,.ailogo{display:inline-flex;align-items:center;gap:6px;margin:0 0 0 12px;padding:4px 10px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#1a1a1a!important;text-decoration:none!important;font-size:.85rem;font-weight:600;vertical-align:middle;margin-top:4px}
 .ailogo:hover{border-color:#999}
 .footlinks .aibar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.footlinks .aibar .ailogo{margin:0}
+.mylinto{flex-basis:100%;margin:4px 0 2px;font-size:.88rem;line-height:1.7}
+.mylinto .link{font:inherit;font-weight:700;background:none;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer}
 </style>
 </head>
 <body>
@@ -723,7 +725,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v214</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). <span class="ver">v215</span></p>
 </div>
 </div>
 
@@ -1678,6 +1680,14 @@ var RULES = [
   // ---------- My lists: save a list to use again (on this phone; signed in, it's also kept in your account) ----------
   var MKEY = "listbyaisle-mylists", MYL = [], MOPEN = "", MFORM = false;
   function myLoad(){ try{ MYL = JSON.parse(localStorage.getItem(MKEY) || "[]") || []; }catch(e){ MYL = []; } return MYL; }
+  // Add my current list to a saved list: anything not already in it is added; nothing in it is removed
+  function myAddInto(t){ var cur = mySnap(), d = t.s || (t.s = {}), n = 0, keys = {};
+    Object.keys(cur.picked || {}).forEach(function(k){ d.picked = d.picked || {}; if(!d.picked[k]){ d.picked[k] = 1; n++; } });
+    (d.own || []).forEach(function(o){ keys[(o.w || "") + "|" + String(o.n).toLowerCase()] = 1; });
+    (cur.own || []).forEach(function(o){ var k = (o.w || "") + "|" + String(o.n).toLowerCase(); if(!keys[k]){ d.own = d.own || []; d.own.push(o); keys[k] = 1; n++; } });
+    Object.keys(cur).forEach(function(k){ var v = cur[k]; if(k === "picked" || k === "own" || k === "got" || k === "removed" || !v || typeof v !== "object" || Array.isArray(v)) return; d[k] = d[k] || {}; Object.keys(v).forEach(function(x){ if(!(x in d[k])) d[k][x] = v[x]; }); });
+    if(Array.isArray(cur.cbags) && cur.cbags.length){ d.cbags = d.cbags || []; cur.cbags.forEach(function(c){ if(!d.cbags.some(function(x){ return x.k === c.k; })) d.cbags.push(c); }); }
+    t.t = Date.now(); MFORM = false; MOPEN = t.id; mySave(); drawMy(); toast(n ? n + (n === 1 ? " thing" : " things") + " added to “" + t.name + "”" : "Everything is already in “" + t.name + "”"); }
   function mySave(){ try{ localStorage.setItem(MKEY, JSON.stringify(MYL)); }catch(e){} if(typeof acctPush === "function") acctPush(); }
   function snapCount(d){ return Object.keys(d.picked || {}).length + (d.own || []).length; }
   function snapNames(d){ return Object.keys(d.picked || {}).concat((d.own || []).map(function(o){ return (o.w ? o.w + ": " : "") + o.n; })); }
@@ -1687,10 +1697,11 @@ var RULES = [
     // My saved lists: "+ Create your own" first, then the lists you've saved
     el.hidden = false; h += '<div class="mylgrid">' + mkCardHTML(has);
     if(MFORM) h += '<div class="mylform"><label for="mylName">Save to My saved lists – give it a name</label><input id="mylName" maxlength="40" placeholder="e.g. Weekly shop" autocomplete="off" enterkeyhint="done"><button class="btn primary" type="button" data-mylok="1">Save</button><button class="link quiet" type="button" data-mylx="1">Cancel</button></div>';
+    if(MFORM && MYL.length) h += '<div class="mylinto"><span>Or add it to a list you\'ve already saved:</span> ' + MYL.map(function(x){ return '<button class="link" type="button" data-myaddto="' + esc(x.id) + '">' + esc(x.name) + '</button>'; }).join(" · ") + '</div>';
     MYL.forEach(function(m){ h += '<button class="trip mine" type="button" data-myl="' + esc(m.id) + '"><b>' + esc(m.name) + '</b><span class="n">' + snapCount(m.s) + ' ' + (snapCount(m.s) === 1 ? 'item' : 'items') + ' · tap to use it</span></button>'; });
     var m = MYL.filter(function(x){ return x.id === MOPEN; })[0];
     if(m){ var nm = snapNames(m.s); h += '<div class="mylopen"><b>' + esc(m.name) + '</b><p>' + esc(nm.slice(0, 12).join(", ")) + (nm.length > 12 ? " and " + (nm.length - 12) + " more" : "") + '</p><div class="row"><button class="btn primary" type="button" data-myadd="1">Add to my list</button><button class="btn" type="button" data-myrep="1">Replace my list</button><button class="btn" type="button" data-mypage="1">Tick-off page</button>'
-      + (has ? '<button class="link quiet" type="button" data-myupd="1">Update it with my current list</button>' : '') + '<button class="link quiet del" type="button" data-mydel="1">Delete</button><button class="link quiet" type="button" data-myx="1">Close</button></div></div>'; }
+      + (has ? '<button class="link quiet" type="button" data-myaddin="1">Add my current list to it</button><button class="link quiet" type="button" data-myupd="1">Replace it with my current list</button>' : '') + '<button class="link quiet del" type="button" data-mydel="1">Delete</button><button class="link quiet" type="button" data-myx="1">Close</button></div></div>'; }
     el.innerHTML = h + '</div>'; }
   function mkCard(){ var c = $("lists") && $("lists").querySelector("#mylCreate"); if(c) c.remove(); }
   function mkCardHTML(has){ return '<button type="button" class="trip mkcard" id="mylCreate"><b>+ Create your own</b><small>' + (has ? 'Keep the list you’ve made, to use again any time.' : 'Make your list at the top, then save it here to use again any time.') + '</small><span class="n">' + (has ? 'Tap to save it' : 'Start by adding things above') + '</span></button>'; }
@@ -1712,12 +1723,14 @@ var RULES = [
     if(b.dataset.mylnew){ if(!nPicked()){ toast("Add what you need to your list first, then save it here"); var qq = $("q"); if(qq){ qq.focus(); window.scrollTo({top:0, behavior:"smooth"}); } return; } MFORM = true; MOPEN = ""; drawMy(); setTimeout(function(){ var i = $("mylName"); if(i) i.focus(); }, 30); return; }
     if(b.dataset.mylx){ MFORM = false; drawMy(); return; }
     if(b.dataset.mylok){ mySaveNew(); return; }
+    if(b.dataset.myaddto){ var tg = MYL.filter(function(x){ return x.id === b.dataset.myaddto; })[0]; if(tg) myAddInto(tg); return; }
     var m = MYL.filter(function(x){ return x.id === MOPEN; })[0]; if(!m) return;
     if(b.dataset.myx){ MOPEN = ""; drawMy(); return; }
     if(b.dataset.mypage){ location.href = myPageUrl(m); return; }
     if(b.dataset.myadd){ var n = applyMy(m, false); MOPEN = ""; drawMy(); showMine(); toast(n ? m.name + ": " + n + " added" : "All of those are on your list already"); return; }
     if(b.dataset.myrep){ if(nPicked() && !confirm("Replace your current list with “" + m.name + "”?")) return; var before = localStorage.getItem(KEY); applyMy(m, true); MOPEN = ""; drawMy(); showMine();
       toast("Now using “" + m.name + "”", function(){ try{ localStorage.setItem(KEY, before); }catch(x){} load(); save(); render(); }); return; }
+    if(b.dataset.myaddin){ myAddInto(m); return; }
     if(b.dataset.myupd){ m.s = mySnap(); m.t = Date.now(); mySave(); drawMy(); toast("“" + m.name + "” updated"); return; }
     if(b.dataset.mydel){ var i = MYL.indexOf(m); MYL.splice(i, 1); MOPEN = ""; mySave(); drawMy(); toast("“" + m.name + "” deleted", function(){ MYL.splice(i, 0, m); mySave(); drawMy(); }); } });
   // A saved list as a tick-off page of its own (/my-list#…): the whole list travels in the link, so it opens on any phone you send it to
