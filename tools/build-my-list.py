@@ -111,7 +111,7 @@ def page(path, title, desc, body, crumbs):
 {body}
 <footer>
 <p><a href="/"><b>ListbyAisle</b></a> – a shopping list sorted by aisle. Free, no account needed. <a href="/">Start your own list</a></p>
-<p>From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">DueAReset</a> (a page of your own to change a habit). {VER}</p>
+<p>From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">ResetbyChoice</a> (a page of your own to change a habit). {VER}</p>
 </footer>
 </div>
 <script>
