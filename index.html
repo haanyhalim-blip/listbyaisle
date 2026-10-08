@@ -1,4 +1,4 @@
-<!-- ListbyAisle v229 -->
+<!-- ListbyAisle v230 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -671,6 +671,16 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
 .bwy .bwyb .bwyh{margin:0 28px 8px 0;font-weight:800;font-size:1.05rem;color:var(--ink,#222)}
 .bwyx{position:absolute;right:8px;top:6px;border:0;background:none;font-size:1.5rem;line-height:1;cursor:pointer;color:var(--muted,#777)}
 .bwy .bwysi{font:inherit;font-weight:700;background:none;border:0;padding:0;color:inherit;text-decoration:underline;cursor:pointer}
+
+/* Ready-made list and recipe picker: change a thing (✎) or add your own before adding */
+.pkrow{display:flex;align-items:center;gap:4px}
+.pkrow .it{flex:1;min-width:0}
+.pken{flex:none;width:32px;height:32px;border:0;background:none;color:var(--muted);cursor:pointer;font-size:1rem;border-radius:8px}
+.pextra{margin:10px 0 4px;display:flex;flex-wrap:wrap;gap:6px}
+.pxi{display:inline-flex;align-items:center;gap:4px;border:1.5px solid var(--line);border-radius:999px;padding:3px 4px 3px 10px;font-size:.9rem;background:var(--card)}
+.pxi button{border:0;background:none;cursor:pointer;color:var(--muted);font-size:1rem}
+.pxin{display:flex;gap:6px;flex:1 1 100%}
+.pxin input{flex:1;min-width:0;font:inherit;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px}
 </style>
 </head>
 <body>
@@ -786,7 +796,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">ResetbyChoice</a> (a page of your own to change a habit). <span class="ver">v229</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">ResetbyChoice</a> (a page of your own to change a habit). <span class="ver">v230</span></p>
 </div>
 </div>
 
@@ -1249,7 +1259,7 @@ var RULES = [
   // Pick-and-choose before anything lands on the list
   var PICK = null;
   function pickRows(kind, id){
-    if(kind === "list"){ var t = LISTS.filter(function(x){ return x.id === id; })[0]; if(!t) return null; return {name:t.name, box:$("listPick"), rows:t.items.map(function(nm){ var it = find(nm); return it ? {n:it.n, q:""} : null; }).filter(Boolean)}; }
+    if(kind === "list"){ var t = LISTS.filter(function(x){ return x.id === id; })[0]; if(!t) return null; return {name:t.name, box:$("listPick"), rows:t.items.map(function(nm){ var it = find(nm); return it ? {n:it.n, q:""} : {n:nm, q:"", own:true}; })}; }
     if(kind === "my"){ var m = (MYR && MYR.recipes || []).filter(function(x){ return x.id === id; })[0]; if(!m) return null; return {name:m.name, box:$("myPick"), rows:m.items.map(function(p){ var it = find(p[0]); return {n:it ? it.n : p[0].charAt(0).toUpperCase() + p[0].slice(1), q:p[1], own:!it}; })}; }
     var r = null; RECIPES.forEach(function(c){ c.recipes.forEach(function(x){ if(x.id === id) r = x; }); }); if(!r) return null;
     return {name:r.name, box:$("recPick"), rows:r.items.map(function(p){ var it = find(p[0]); return {n:it ? it.n : p[0], q:p[1], own:!it}; })};
@@ -1259,19 +1269,28 @@ var RULES = [
     AISLES.forEach(function(a){ if(by[a[0]]) out.push({label:a[1], rows:by[a[0]]}); });
     Object.keys(by).forEach(function(k){ if(!AISLES.some(function(a){ return a[0] === k; })) out.push({label:"Other", rows:by[k]}); });
     return out; }
-  function openPick(kind, id){ var d = pickRows(kind, id); if(!d) return; closePick(); PICK = {kind:kind, id:id, d:d, off:{}}; drawPick(); document.querySelectorAll(".trip.on").forEach(function(x){ x.classList.remove("on"); }); var card = document.querySelector('.trip[data-list="'+id+'"]') || document.querySelector('.trip:has(.addrec[data-rec="'+id+'"])'); if(card) card.classList.add("on"); d.box.scrollIntoView({block:"start", behavior:"smooth"}); }
+  function openPick(kind, id){ var d = pickRows(kind, id); if(!d) return; closePick(); PICK = {kind:kind, id:id, d:d, off:{}, ren:{}, extra:[]}; drawPick(); document.querySelectorAll(".trip.on").forEach(function(x){ x.classList.remove("on"); }); var card = document.querySelector('.trip[data-list="'+id+'"]') || document.querySelector('.trip:has(.addrec[data-rec="'+id+'"])'); if(card) card.classList.add("on"); d.box.scrollIntoView({block:"start", behavior:"smooth"}); }
   function closePick(){ if(!PICK) return; if(PICK.d.box === $("lpBody")){ var wasLp = true; } document.querySelectorAll(".trip.on").forEach(function(x){ x.classList.remove("on"); }); PICK.d.box.hidden = true; PICK.d.box.innerHTML = ""; PICK = null;  if(wasLp) setTimeout(function(){ if(!$("lp").hidden) lpClose(); }, 0); }
   function drawPick(){ var d = PICK.d, on = d.rows.filter(function(r){ return !PICK.off[r.n]; }).length;
-    d.box.innerHTML = '<div class="phead"><button class="pclose" type="button" data-pickclose="1" aria-label="Close">×</button><span class="pk">Choose what to add from</span><b>'+esc(d.name)+'</b><small>Everything is ticked – untick what you don’t need, then press Add.</small></div><div class="grid">'
-      + pickGroups(d.rows).map(function(g){ return '<div class="pgrp">'+esc(g.label)+'</div>' + g.rows.map(function(r){ var k = !PICK.off[r.n]; return '<button class="it" type="button" data-pick="'+esc(r.n)+'" aria-pressed="'+k+'"><span class="box"></span><span><span class="nm">'+esc(r.n)+'</span>'+(r.q ? '<span class="qty">'+esc(r.q)+'</span>' : '')+'</span></button>'; }).join(""); }).join("")
-      + '</div><div class="prow"><button class="btn primary" type="button" data-pickadd="1">Add '+on+' to my list</button><button class="link quiet" type="button" data-pickall="1">'+(on === d.rows.length ? 'Untick all' : 'Tick all')+'</button><button class="link quiet" type="button" data-pickclose="1">Cancel</button></div>';
+    d.box.innerHTML = '<div class="phead"><button class="pclose" type="button" data-pickclose="1" aria-label="Close">×</button><span class="pk">Choose what to add from</span><b>'+esc(d.name)+'</b><small>It’s a starting point – untick what you don’t need, tap ✎ to change something, or add your own, then press Add.</small></div><div class="grid">'
+      + pickGroups(d.rows).map(function(g){ return '<div class="pgrp">'+esc(g.label)+'</div>' + g.rows.map(function(r){ var k = !PICK.off[r.n]; return '<div class="pkrow"><button class="it" type="button" data-pick="'+esc(r.n)+'" aria-pressed="'+k+'"><span class="box"></span><span><span class="nm">'+esc(PICK.ren[r.n] || r.n)+'</span>'+(r.q ? '<span class="qty">'+esc(r.q)+'</span>' : '')+'</span></button><button type="button" class="pken" data-pickren="'+esc(r.n)+'" aria-label="Change this">✎</button></div>'; }).join(""); }).join("")
+      + '</div><div class="pextra">' + PICK.extra.map(function(x, i){ return '<span class="pxi">' + esc(x) + '<button type="button" data-pickxx="' + i + '" aria-label="Remove">×</button></span>'; }).join("")
+      + '<div class="pxin"><input class="pickOwn" maxlength="80" placeholder="Add your own – e.g. Kitchen roll" aria-label="Add your own"><button type="button" class="btn" data-pickown="1">Add</button></div></div><div class="prow"><button class="btn primary" type="button" data-pickadd="1">Add '+on+' to my list</button><button class="link quiet" type="button" data-pickall="1">'+(on === d.rows.length ? 'Untick all' : 'Tick all')+'</button><button class="link quiet" type="button" data-pickclose="1">Cancel</button></div>';
     d.box.hidden = false; }
+  function pickOwn(quiet){ if(!PICK) return; var i = PICK.d.box.querySelector(".pickOwn"); if(!i) return; var v = i.value.replace(/\s+/g, " ").trim(); if(!v) return; PICK.extra.push(v); if(!quiet){ drawPick(); var j = PICK.d.box.querySelector(".pickOwn"); if(j) j.focus(); } }
+  ["listPick", "recPick", "myPick", "lpBody"].forEach(function(id){ var el = $(id); if(el) el.addEventListener("keydown", function(e){ if(e.target.classList && e.target.classList.contains("pickOwn") && e.key === "Enter"){ e.preventDefault(); pickOwn(); } }); });
   function onPickClick(e){ if(!PICK) return; var d = PICK.d;
     if(e.target.closest("[data-pickclose]")){ closePick(); return; }
     if(e.target.closest("[data-pickall]")){ var all = d.rows.every(function(r){ return !PICK.off[r.n]; }); PICK.off = {}; if(all) d.rows.forEach(function(r){ PICK.off[r.n] = 1; }); drawPick(); return; }
+    var rn = e.target.closest("[data-pickren]"); if(rn){ var o0 = rn.dataset.pickren, v = prompt("Change this to:", PICK.ren[o0] || o0); if(v != null){ v = v.replace(/\s+/g, " ").trim(); if(v && v !== o0) PICK.ren[o0] = v; else delete PICK.ren[o0]; delete PICK.off[o0]; drawPick(); } return; }
+    var xx = e.target.closest("[data-pickxx]"); if(xx){ PICK.extra.splice(+xx.dataset.pickxx, 1); drawPick(); return; }
+    if(e.target.closest("[data-pickown]")){ pickOwn(); return; }
     var b = e.target.closest("[data-pick]"); if(b){ var n = b.dataset.pick; if(PICK.off[n]) delete PICK.off[n]; else PICK.off[n] = 1; drawPick(); return; }
-    if(e.target.closest("[data-pickadd]")){ var n2 = 0; S.qty = S.qty || {};
+    if(e.target.closest("[data-pickadd]")){ var n2 = 0; S.qty = S.qty || {}; pickOwn(true);
+      var addAny = function(x){ var it = find(x); if(it){ if(!S.picked[it.n]) n2++; S.picked[it.n] = 1; unpark(it.n); } else if(!S.own.some(function(o){ return norm(o.n) === norm(x); })){ S.own.push({n:x, a:classify(x), got:false, org:false}); n2++; unpark(x); } };
+      PICK.extra.forEach(addAny);
       d.rows.forEach(function(r){ if(PICK.off[r.n]) return;
+        if(PICK.ren[r.n]){ addAny(PICK.ren[r.n]); if(r.q) S.qty[PICK.ren[r.n]] = r.q; return; }   // changed: it goes on under its new name
         if(r.own){ if(!S.own.some(function(o){ return norm(o.n) === norm(r.n); })){ S.own.push({n:r.n, a:classify(r.n), got:false, org:false}); n2++; } }
         else { if(!S.picked[r.n]) n2++; S.picked[r.n] = 1; }
         unpark(r.n); if(r.q) S.qty[r.n] = r.q; });
@@ -1707,7 +1726,7 @@ var RULES = [
   $("lpSteps").addEventListener("click", function(e){ var b = e.target.closest(".colcards [data-rec], .snk [data-rec]"); if(!b) return; e.preventDefault(); lpOpen("rec", b.dataset.rec, true); });
   function lpOpen(kind, id, push){ if(kind === "col") return colOpen(id, push); document.querySelector("#lp .lpadd").hidden = false; $("lpPrint").hidden = false; $("lpBody").hidden = false;
     var d = pickRows(kind, id), f = lpFind(kind, id); if(!d || !f) return false; closePick();
-    d.box = $("lpBody"); PICK = {kind:kind, id:id, d:d, off:{}}; drawPick();
+    d.box = $("lpBody"); PICK = {kind:kind, id:id, d:d, off:{}, ren:{}, extra:[]}; drawPick();
     var meta = "", steps = "", link = "";
     if(kind === "list"){ $("lpKind").textContent = "Ready-made list"; meta = f.blurb || ""; }
     else if(kind === "my"){ $("lpKind").textContent = (MYR && MYR.name) || "My recipes"; meta = f.notes ? "" : ""; if(f.notes) steps = '<h2>Method and notes</h2><p style="white-space:pre-line">' + esc(f.notes) + '</p>'; }
