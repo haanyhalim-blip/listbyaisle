@@ -1,4 +1,4 @@
-<!-- ListbyAisle v227 -->
+<!-- ListbyAisle v228 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -717,7 +717,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
       <div class="vtog" id="vtog" hidden role="group" aria-label="How to show my list"><button type="button" data-v="aisle" aria-pressed="true">Aisle</button><button type="button" data-v="az" aria-pressed="false">A–Z</button></div>
       <button class="hic hshare" id="mineShare" type="button" aria-expanded="false" aria-controls="shareBox" title="Share this list"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></svg><span class="cap"></span></button>
       <button class="hic" id="mylSaveLink" type="button" hidden title="Save to My saved lists"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12v18l-6-4-6 4z"/></svg><span class="cap">Save</span></button>
-      <button class="hic clearic" id="clear" type="button" hidden title="Clear the whole list"><svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true"><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.7"/><line x1="3.7" y1="3.7" x2="12.3" y2="12.3" stroke="currentColor" stroke-width="1.7"/></svg><span class="cap">Clear</span></button>
+      <button class="hic clearic" id="clear" type="button" hidden title="Clear the whole list"><svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true"><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.7"/><line x1="3.7" y1="3.7" x2="12.3" y2="12.3" stroke="currentColor" stroke-width="1.7"/></svg><span class="cap">Clear list</span></button>
     </div>
   <div id="mineBody">
     <div id="mine"></div>
@@ -780,7 +780,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">ResetbyChoice</a> (a page of your own to change a habit). <span class="ver">v227</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">ResetbyChoice</a> (a page of your own to change a habit). <span class="ver">v228</span></p>
 </div>
 </div>
 
@@ -1212,7 +1212,7 @@ var RULES = [
   function clearSearch(){ query = ""; $("q").value = ""; $("qClear").hidden = true; document.body.classList.remove("searching"); render(); }
   $("qClear").addEventListener("click", function(){ clearSearch(); $("q").focus(); });
   $("q").addEventListener("keydown", function(e){ if(e.key === "Enter"){ e.preventDefault(); if(splitRaw(this.value).length > 1) addTyped(this.value); else this.blur(); } });
-  function clearAll(){ if(!nPicked()) return; if(!confirm("Clear your shopping list?")) return; Object.keys(S.picked).forEach(function(n){ park({n:n, org:!!S.org[n]}); }); S.own.forEach(function(o){ park({n:o.n, org:!!o.org, own:{a:o.a}}); }); S = {picked:{}, got:{}, own:[], org:{}, removed:S.removed}; save(); render(); }
+  function clearAll(){ if(!nPicked()) return; if(!confirm("Clear the whole shopping list? Everything comes off – ticked or not.")) return; Object.keys(S.picked).forEach(function(n){ park({n:n, org:!!S.org[n]}); }); S.own.forEach(function(o){ park({n:o.n, org:!!o.org, own:{a:o.a}}); }); S = {picked:{}, got:{}, own:[], org:{}, removed:S.removed}; save(); render(); }
   $("clear").addEventListener("click", clearAll);
   $("copy").addEventListener("click", function(){
     var t = asText(); if(!t) return;
