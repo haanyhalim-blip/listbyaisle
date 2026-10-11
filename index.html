@@ -1,4 +1,4 @@
-<!-- ListbyAisle v231 -->
+<!-- ListbyAisle v232 -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -681,6 +681,9 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
 .pxi button{border:0;background:none;cursor:pointer;color:var(--muted);font-size:1rem}
 .pxin{display:flex;gap:6px;flex:1 1 100%}
 .pxin input{flex:1;min-width:0;font:inherit;padding:8px 10px;border:1.5px solid var(--line);border-radius:10px}
+
+/* My today: a shortcut to your day in DobyToday, on every Family Ecosphere site */
+.mytoday{text-decoration:none;color:inherit}
 </style>
 </head>
 <body>
@@ -709,7 +712,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
       .then(function(){ b.disabled = false; }); }); })();
 </script>
 
-  <button class="btn keepb acctb" id="acctBtn" type="button">Sign in</button><button type="button" class="ideasb" id="ideasBtn" aria-expanded="false" aria-controls="bwy" title="Tell us what would help"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Feedback</button><span class="swwrap"><button class="swb" id="swBtn" type="button" aria-expanded="false" aria-controls="swCard" title="Our other handy sites" aria-label="Switch to our other sites"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><circle cx="5" cy="5" r="2.2"/><circle cx="12" cy="5" r="2.2"/><circle cx="19" cy="5" r="2.2"/><circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="19" cy="12" r="2.2"/><circle cx="5" cy="19" r="2.2"/><circle cx="12" cy="19" r="2.2"/><circle cx="19" cy="19" r="2.2"/></svg></button><div class="swcard" id="swCard" hidden></div></span>
+  <button class="btn keepb acctb" id="acctBtn" type="button">Sign in</button><button type="button" class="ideasb" id="ideasBtn" aria-expanded="false" aria-controls="bwy" title="Tell us what would help"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg>Feedback</button><a class="ideasb mytoday" href="https://dobytoday.com/" title="Your day – today's schedule, to-do list and more – in DobyToday">📅 My today</a><span class="swwrap"><button class="swb" id="swBtn" type="button" aria-expanded="false" aria-controls="swCard" title="Our other handy sites" aria-label="Switch to our other sites"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><circle cx="5" cy="5" r="2.2"/><circle cx="12" cy="5" r="2.2"/><circle cx="19" cy="5" r="2.2"/><circle cx="5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="19" cy="12" r="2.2"/><circle cx="5" cy="19" r="2.2"/><circle cx="12" cy="19" r="2.2"/><circle cx="19" cy="19" r="2.2"/></svg></button><div class="swcard" id="swCard" hidden></div></span>
 </header>
 
 <div class="sticky">
@@ -796,7 +799,7 @@ header{position:relative}header>*{position:relative;z-index:1}header::after{cont
   </div>
 </section>
 
-  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">ResetbyChoice</a> (a page of your own to change a habit). <span class="ver">v231</span></p>
+  <p class="tiny">From Handy Little Tools – also try <a href="https://packbybag.com/">PackbyBag</a> (a packing list sorted by bag), <a href="https://dobytoday.com/">DobyToday</a> (today’s jobs, sorted by when) and <a href="https://dueareset.com/">ResetbyChoice</a> (a page of your own to change a habit). <span class="ver">v232</span></p>
 </div>
 </div>
 
